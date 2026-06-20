@@ -37,7 +37,8 @@
 
     <script>
       const CONFIG = {
-        beltfedSite: "https://beltfed.com",        steamWishlist: "https://steam.com",
+        beltfedSite: "https://beltfed.com",
+        steamWishlist: "https://steam.com",
         email: "hello@helloworldstudios.io",
         linktree: "https://linktr.ee/beltfedgame",
       };
@@ -99,6 +100,7 @@
         max-width: var(--maxw);
         margin: 0 auto;
       }
+
       .site-header {
         position: fixed;
         top: 0;
@@ -131,7 +133,8 @@
         text-transform: uppercase;
         text-decoration: none;
         color: var(--text);
-        white-space: nowrap;        padding-left: 0.35em;
+        white-space: nowrap;
+        padding-left: 0.35em;
         transition: color 0.15s ease;
       }
       .brand:hover {
@@ -176,6 +179,7 @@
       .nav__link:focus-visible::after {
         transform: scaleX(1);
       }
+
       section {
         scroll-margin-top: var(--header-h);
       }
@@ -189,7 +193,9 @@
         font-weight: 800;
         letter-spacing: 0.06em;
         text-transform: uppercase;
-      }      .btn {
+      }
+
+      .btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -247,7 +253,9 @@
         flex-wrap: wrap;
         gap: 1rem;
       }
-      .hero {        --accent: #ff7a18;
+
+      .hero {
+        --accent: #ff7a18;
         --accent-2: #ffb347;
         --accent-ink: #1a1205;
         --accent-glow: rgba(255, 122, 24, 0.35);
@@ -287,6 +295,7 @@
       .hero .btn-row {
         justify-content: center;
       }
+
       .about {
         background: var(--bg-alt);
         border-top: 1px solid var(--border);
@@ -297,6 +306,7 @@
         font-size: clamp(1.05rem, 2.4vw, 1.2rem);
         color: #d6d6d8;
       }
+
       .contact {
         text-align: center;
       }
@@ -309,6 +319,7 @@
       .contact .btn-row {
         justify-content: center;
       }
+
       .footer {
         background: var(--bg-alt);
         border-top: 1px solid var(--border);
@@ -350,6 +361,7 @@
         opacity: 1;
         text-decoration: underline;
       }
+
       .reveal {
         opacity: 0;
         transform: translateY(24px);
@@ -431,11 +443,9 @@
         <div class="inner reveal">
           <h2 class="section-title">About</h2>
           <p class="about__text">
-            Hello World Studios is an independent games studio building
-            ambitious worlds for players who love depth and challenge. We're a
-            small, passionate team focused on crafting memorable experiences —
-            starting with our debut title, BELTFED.
-            <em>(Placeholder copy — replace with your studio's real story.)</em>
+            Founded by two brothers from the UK, Hello World Studios is a small
+            independent company building the games we'd want to play ourselves;
+            deep systems, ambitious scale, and lots of chaos.
           </p>
         </div>
       </section>
@@ -489,7 +499,8 @@
     </footer>
 
     <script>
-      (function () {        const map = {
+      (function () {
+        const map = {
           steam: CONFIG.steamWishlist,
           beltfed: CONFIG.beltfedSite,
           linktree: CONFIG.linktree,
@@ -502,13 +513,16 @@
               el.setAttribute("href", map[key]);
             });
         });
+
         document.querySelectorAll('[data-link="email"]').forEach(function (el) {
           el.setAttribute("href", "mailto:" + CONFIG.email);
           if (el.classList.contains("footer__link")) {
             el.textContent = CONFIG.email;
           }
         });
+
         document.getElementById("year").textContent = new Date().getFullYear();
+
         const obs = new IntersectionObserver(
           function (entries) {
             entries.forEach(function (e) {
