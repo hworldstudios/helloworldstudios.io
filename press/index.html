@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Privacy Policy - Hello World Studios</title>
+    <title>Press - Hello World Studios</title>
     <meta
       name="description"
-      content="Privacy Policy for Hello World Studios."
+      content="Press kit for Hello World Studios — coming soon."
     />
     <meta name="theme-color" content="#0c0c0e" />
     <meta name="robots" content="noindex" />
@@ -39,7 +39,6 @@
         --muted: #a0a0a4;
         --accent: #2f9bff;
         --border: #2a2a30;
-        --maxw: 760px;
         --header-h: 68px;
       }
 
@@ -49,6 +48,9 @@
 
       body {
         margin: 0;
+        min-height: 100svh;
+        display: flex;
+        flex-direction: column;
         background: var(--bg);
         color: var(--text);
         font-family:
@@ -117,41 +119,21 @@
       }
 
       main {
-        max-width: var(--maxw);
-        margin: 0 auto;
-        padding: calc(var(--header-h) + clamp(2.5rem, 6vw, 4rem)) 1.25rem
-          clamp(3rem, 8vw, 5rem);
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: calc(var(--header-h) + 1.5rem) 1.25rem 1.5rem;
       }
       h1 {
         font-size: clamp(1.8rem, 5vw, 2.6rem);
         font-weight: 800;
         letter-spacing: 0.04em;
         text-transform: uppercase;
-        margin: 0 0 0.4rem;
+        margin: 0;
       }
-      .updated {
-        color: var(--muted);
-        font-size: 0.85rem;
-        margin: 0 0 2.5rem;
-      }
-      h2 {
-        font-size: clamp(1.15rem, 3vw, 1.4rem);
-        margin: 2.5rem 0 0.6rem;
-        letter-spacing: 0.02em;
-      }
-      p {
-        color: #d6d6d8;
-      }
-      .note {
-        margin: 0 0 2rem;
-        padding: 0.9rem 1.1rem;
-        background: var(--bg-alt);
-        border: 1px solid var(--border);
-        border-left: 3px solid var(--accent);
-        border-radius: 8px;
-        color: var(--muted);
-        font-size: 0.9rem;
-      }
+
       footer {
         border-top: 1px solid var(--border);
         text-align: center;
@@ -171,29 +153,7 @@
     </header>
 
     <main>
-      <h1>Privacy Policy</h1>
-      <p class="updated">Last updated: <span id="updated"></span></p>
-
-      <h2>General</h2>
-      <p>We don't collect or share any personal information.</p>
-
-      <h2>Third-Party Services</h2>
-      <p>
-        Our website may link to third-party services (i.e. Social Media
-        Platforms). When you play our games, the operating system (i.e. Windows)
-        or the distribution platform (i.e. Steam) may collect your personal
-        infomation. These services have their own privacy policies, and we
-        encourage you to review them. We are not responsible for the practices
-        of third-party services.
-      </p>
-
-      <h2>Contact Us</h2>
-      <p>
-        If you have any questions about this Privacy Policy, you can reach us at
-        <a href="mailto:hello@helloworldstudios.io"
-          >hello@helloworldstudios.io</a
-        >.
-      </p>
+      <h1>Press kit coming soon</h1>
     </main>
 
     <footer>
@@ -204,12 +164,6 @@
 
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
-      document.getElementById("updated").textContent =
-        new Date().toLocaleDateString("en-GB", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
     </script>
   </body>
 </html>

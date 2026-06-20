@@ -7,26 +7,38 @@
     <title>Hello World Studios</title>
     <meta
       name="description"
-      content="Hello World Studios — an independent games studio."
+      content="Creators of the roguelike factory defence game BELTFED."
     />
     <meta name="theme-color" content="#0c0c0e" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="assets/favicon-light-theme.png"
+      media="(prefers-color-scheme: light)"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="assets/favicon-dark-theme.png"
+      media="(prefers-color-scheme: dark)"
+    />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Hello World Studios" />
     <meta property="og:title" content="Hello World Studios" />
     <meta
       property="og:description"
-      content="An independent games studio. Creators of BELTFED."
+      content="Creators of the roguelike factory defence game BELTFED."
     />
-    <meta property="og:image" content="assets/beltfed-bg.jpg" />
+    <meta property="og:image" content="assets/beltfed-logo.png" />
     <meta property="og:url" content="https://helloworldstudios.io" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Hello World Studios" />
     <meta
       name="twitter:description"
-      content="An independent games studio. Creators of BELTFED."
+      content="Creators of the roguelike factory defence game BELTFED."
     />
-    <meta name="twitter:image" content="assets/beltfed-bg.jpg" />
+    <meta name="twitter:image" content="assets/beltfed-logo.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,7 +49,7 @@
 
     <script>
       const CONFIG = {
-        beltfedSite: "https://beltfed.com",
+        beltfedSite: "https://beltfedgame.com",
         steamWishlist: "https://steam.com",
         email: "hello@helloworldstudios.io",
         linktree: "https://linktr.ee/beltfedgame",
@@ -387,22 +399,18 @@
         text-align: center;
         padding: clamp(2.5rem, 6vw, 3.5rem) 1.25rem;
       }
-      .footer__brand {
-        font-family: "Montserrat", sans-serif;
-        font-weight: 300;
-        font-size: clamp(0.75rem, 2.4vw, 1rem);
-        letter-spacing: 0.35em;
-        text-transform: uppercase;
-        color: var(--text);
-        padding-left: 0.35em;
-      }
       .footer__meta {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem 1rem;
-        margin-top: 1.5rem;
+        gap: 0.4rem 0;
+      }
+      .footer__meta > * + *::before {
+        content: "·";
+        margin: 0 0.7rem;
+        color: var(--muted);
+        opacity: 0.6;
       }
       .footer__copy {
         margin: 0;
@@ -458,6 +466,7 @@
           <a class="nav__link" href="#beltfed">Beltfed</a>
           <a class="nav__link" href="#about">About</a>
           <a class="nav__link" href="#contact">Contact</a>
+          <a class="nav__link" href="press/">Press</a>
         </nav>
       </div>
     </header>
@@ -505,10 +514,10 @@
           <div class="about__content">
             <h2 class="section-title">About</h2>
             <p class="about__text">
-              Founded by two brothers from Cornwall in the UK, Hello World
-              Studios is an independent games company building the stuff we'd
-              want to play ourselves; deep systems, ambitious scale, and lots of
-              chaos.
+              Hello World Studios is an independent games company founded by two
+              brothers from Cornwall in the UK. We build the kind of games we'd
+              want to play ourselves: deep systems, ambitious scale, and
+              beautiful chaos.
             </p>
           </div>
           <ul class="about__devs">
@@ -560,13 +569,11 @@
 
     <footer class="footer">
       <div class="inner reveal">
-        <span class="footer__brand">Hello World Studios</span>
         <div class="footer__meta">
           <p class="footer__copy">
             &copy; <span id="year"></span> Hello World Studios. All rights
             reserved.
           </p>
-          <a class="footer__link" data-link="email" href="#"></a>
           <a class="footer__link" href="policy/">Privacy Policy</a>
         </div>
       </div>
@@ -590,9 +597,6 @@
 
         document.querySelectorAll('[data-link="email"]').forEach(function (el) {
           el.setAttribute("href", "mailto:" + CONFIG.email);
-          if (el.classList.contains("footer__link")) {
-            el.textContent = CONFIG.email;
-          }
         });
 
         document.getElementById("year").textContent = new Date().getFullYear();
