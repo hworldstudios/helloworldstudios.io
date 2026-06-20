@@ -301,10 +301,71 @@
         border-top: 1px solid var(--border);
         border-bottom: 1px solid var(--border);
       }
+      .about .inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: clamp(2rem, 5vw, 4rem);
+      }
+      .about__content {
+        flex: 1 1 340px;
+      }
       .about__text {
-        max-width: 720px;
+        max-width: 60ch;
+        margin: 0;
         font-size: clamp(1.05rem, 2.4vw, 1.2rem);
         color: #d6d6d8;
+      }
+      .about__devs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: clamp(1rem, 2.5vw, 1.5rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .dev {
+        position: relative;
+        width: clamp(120px, 28vw, 170px);
+        aspect-ratio: 1 / 1;
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: var(--bg);
+        border: 1px solid var(--border);
+      }
+      .dev img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: opacity 0.25s ease;
+      }
+      .dev__name {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #fff;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+        opacity: 0;
+        transition: opacity 0.25s ease;
+        pointer-events: none;
+      }
+      .dev:hover img,
+      .dev:focus-visible img {
+        opacity: 0.5;
+      }
+      .dev:hover .dev__name,
+      .dev:focus-visible .dev__name {
+        opacity: 1;
+      }
+      .dev:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
       }
 
       .contact {
@@ -441,12 +502,25 @@
 
       <section id="about" class="section about">
         <div class="inner reveal">
-          <h2 class="section-title">About</h2>
-          <p class="about__text">
-            Founded by two brothers from the UK, Hello World Studios is a small
-            independent company building the games we'd want to play ourselves;
-            deep systems, ambitious scale, and lots of chaos.
-          </p>
+          <div class="about__content">
+            <h2 class="section-title">About</h2>
+            <p class="about__text">
+              Founded by two brothers from Cornwall in the UK, Hello World
+              Studios is an independent games company building the stuff we'd
+              want to play ourselves; deep systems, ambitious scale, and lots of
+              chaos.
+            </p>
+          </div>
+          <ul class="about__devs">
+            <li class="dev" tabindex="0">
+              <img src="assets/troy.jpg" alt="Troy" loading="lazy" />
+              <span class="dev__name">Troy</span>
+            </li>
+            <li class="dev" tabindex="0">
+              <img src="assets/toby.jpg" alt="Toby" loading="lazy" />
+              <span class="dev__name">Toby</span>
+            </li>
+          </ul>
         </div>
       </section>
 
