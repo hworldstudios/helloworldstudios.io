@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Privacy Policy - Hello World Studios</title>
+    <meta
+      name="description"
+      content="Privacy Policy for Hello World Studios."
+    />
+    <meta name="theme-color" content="#0c0c0e" />
+    <meta name="robots" content="noindex" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #0c0c0e;
+        --bg-alt: #131316;
+        --text: #f4f4f2;
+        --muted: #a0a0a4;
+        --accent: #2f9bff;
+        --border: #2a2a30;
+        --maxw: 760px;
+        --header-h: 68px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          Helvetica,
+          Arial,
+          sans-serif;
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      .site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: var(--header-h);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        background: rgba(12, 12, 14, 0.72);
+        backdrop-filter: saturate(140%) blur(12px);
+        -webkit-backdrop-filter: saturate(140%) blur(12px);
+        border-bottom: 1px solid var(--border);
+      }
+      .site-header__inner {
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .brand {
+        font-family: "Montserrat", sans-serif;
+        font-weight: 300;
+        font-size: clamp(0.7rem, 2.4vw, 0.95rem);
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: var(--text);
+        white-space: nowrap;
+        padding-left: 0.35em;
+      }
+      .back {
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: var(--muted);
+        transition: color 0.15s ease;
+      }
+      .back:hover {
+        color: var(--text);
+      }
+
+      main {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: calc(var(--header-h) + clamp(2.5rem, 6vw, 4rem)) 1.25rem
+          clamp(3rem, 8vw, 5rem);
+      }
+      h1 {
+        font-size: clamp(1.8rem, 5vw, 2.6rem);
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin: 0 0 0.4rem;
+      }
+      .updated {
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin: 0 0 2.5rem;
+      }
+      h2 {
+        font-size: clamp(1.15rem, 3vw, 1.4rem);
+        margin: 2.5rem 0 0.6rem;
+        letter-spacing: 0.02em;
+      }
+      p {
+        color: #d6d6d8;
+      }
+      .note {
+        margin: 0 0 2rem;
+        padding: 0.9rem 1.1rem;
+        background: var(--bg-alt);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      footer {
+        border-top: 1px solid var(--border);
+        text-align: center;
+        padding: 2.5rem 1.25rem;
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="brand" href="../">Hello World Studios</a>
+        <a class="back" href="../">&larr; Back to home</a>
+      </div>
+    </header>
+
+    <main>
+      <h1>Privacy Policy</h1>
+      <p class="updated">Last updated: <span id="updated"></span></p>
+
+      <h2>General</h2>
+      <p>We don't collect or share any personal information.</p>
+
+      <h2>Third-Party Services</h2>
+      <p>
+        Our website may link to third-party services (i.e. Social Media
+        Platforms). When you play our games, the operating system (i.e. Windows)
+        or the distribution platform (i.e. Steam) may collect your personal
+        infomation. These services have their own privacy policies, and we
+        encourage you to review them. We are not responsible for the practices
+        of third-party services.
+      </p>
+
+      <h2>Contact Us</h2>
+      <p>
+        If you have any questions about this Privacy Policy, you can reach us at
+        <a href="mailto:hello@helloworldstudios.io"
+          >hello@helloworldstudios.io</a
+        >.
+      </p>
+    </main>
+
+    <footer>
+      <p>
+        &copy; <span id="year"></span> Hello World Studios. All rights reserved.
+      </p>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      document.getElementById("updated").textContent =
+        new Date().toLocaleDateString("en-GB", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+    </script>
+  </body>
+</html>
