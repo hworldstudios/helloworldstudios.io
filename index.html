@@ -443,6 +443,15 @@
         transform: none;
       }
 
+      @media (max-width: 640px) {
+        .nav__link[href^="#"] {
+          display: none;
+        }
+        .footer__meta > * + *::before {
+          display: none;
+        }
+      }
+
       @media (prefers-reduced-motion: reduce) {
         html {
           scroll-behavior: auto;
