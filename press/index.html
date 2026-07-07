@@ -141,6 +141,41 @@
         color: var(--muted);
         font-size: 0.78rem;
       }
+      .footer__meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem 0;
+      }
+      .footer__meta > * + *::before {
+        content: "·";
+        margin: 0 0.7rem;
+        color: var(--muted);
+        opacity: 0.6;
+      }
+      .footer__copy {
+        margin: 0;
+      }
+      .footer__link {
+        color: var(--muted);
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        opacity: 0.8;
+        transition: opacity 0.15s ease;
+      }
+      .footer__link:hover,
+      .footer__link:focus-visible {
+        opacity: 1;
+        text-decoration: underline;
+      }
+
+      @media (max-width: 640px) {
+        .footer__meta > * + *::before {
+          content: "";
+          margin: 0 0 0 0.35rem;
+        }
+      }
     </style>
   </head>
 
@@ -157,9 +192,13 @@
     </main>
 
     <footer>
-      <p>
-        &copy; <span id="year"></span> Hello World Studios. All rights reserved.
-      </p>
+      <div class="footer__meta">
+        <p class="footer__copy">
+          &copy; <span id="year"></span> Hello World Studios. All rights
+          reserved.
+        </p>
+        <a class="footer__link" href="../policy/">Privacy Policy</a>
+      </div>
     </footer>
 
     <script>
