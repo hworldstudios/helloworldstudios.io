@@ -89,13 +89,13 @@ Video is **not** included in the press kit download - everything below streams o
 - **4K MP4:** [Download from Google Drive](https://drive.google.com/file/d/14PxjfY7sSNz39gYBAymPmmnskpKc-n5K)
 - **1080p MP4:** [Download from Google Drive](https://drive.google.com/file/d/1Ei3-TWZRDzvugSAi9SKLuLqlZfToavAO)
 
-### Raw gameplay capture - B-roll for creators
+### Gameplay footage
 
 TODO: Gameplay footage on YouTube - add link
 TODO: Gameplay capture 1080p MP4 - add Google Drive link
 TODO: Gameplay capture 4K MP4 - add Google Drive link
 
-### Social cut - 15-30s
+### Social cut
 
 TODO: Social cut - not yet available
 
@@ -132,7 +132,7 @@ TODO: Nexus falling - the run ending
 - **Toby Atkinson** - Developer · Lead Designer · [LinkedIn](https://www.linkedin.com/in/toby-atkinson/)
 - **Troy Atkinson** - Developer · Business & Operations · [LinkedIn](https://www.linkedin.com/in/troymakesgames/)
 
-Hello World Studios is a two-person independent studio founded by brothers Toby and Troy Atkinson. Cornish, now based in Abu Dhabi, both studied games development at Falmouth Games Academy.
+Hello World Studios is a two-person independent studio founded by brothers Toby and Troy Atkinson. From Cornwall in the UK, now based in Abu Dhabi, both studied games development at Falmouth Games Academy.
 
 Toby went straight into the indie industry after university, and was one of three developers behind the roguelike [Firehawk FPV Drone Fighter](https://store.steampowered.com/app/3365170/Firehawk_FPV_Drone_Fighter/) (TruePlayers, 2025). Troy went on to study entrepreneurship and became a staff engineer and shareholder at adtech startup [Audiomob](https://audiomob.com).
 
