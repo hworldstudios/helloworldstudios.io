@@ -5,9 +5,11 @@ https://beltfedgame.com  ·  https://helloworldstudios.io
 
 WHAT'S IN HERE
 --------------
-presskit.html   Fact sheet, descriptions, features, history, quotes and
-                permissions. Open it in any browser - all the links work,
-                including the ones pointing at the files in here.
+presskit.html   The full kit copy: fact sheet, descriptions, features,
+                history, quotes, permissions. Open it in any browser - the
+                links work, including the ones pointing at the files here.
+presskit.pdf    Same copy, print-friendly, for attaching to an email.
+presskit.docx   Same copy, editable in Word or Google Docs.
 screenshots/    Full-resolution stills, 3840x2160.
 gifs/           Short loops for articles and social posts.
 logos/          BELTFED and Hello World Studios logos plus the app and

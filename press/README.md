@@ -10,6 +10,8 @@ press/
   presskit.md         ALL copy. Edit this and nothing else.
   press-kit/          <- this folder IS the download
     presskit.html       GENERATED from presskit.md - don't hand-edit
+    presskit.pdf        GENERATED - print/email version
+    presskit.docx       GENERATED - editable version
     README.txt          notes for journalists
     screenshots/        *.jpg
     gifs/               *.gif
@@ -24,15 +26,25 @@ press/
 ## The loop
 
 1. Edit `presskit.md` for copy, `press-kit/` for files.
-2. `python press/tools/build-zip.py` - regenerates `press-kit/presskit.html`
-   from the markdown, then rebuilds `press-kit.zip`.
+2. `python press/tools/build-zip.py` - regenerates `presskit.html`,
+   `presskit.pdf` and `presskit.docx` from the markdown, then rebuilds
+   `press-kit.zip`. One parser feeds all three, so they can't disagree.
 3. `python press/tools/make-thumbs.py` if you added images. Optional but worth
    it: without it the gallery falls back to the full-resolution originals,
    which are ~5 MB each.
 4. Commit and push.
 
-Step 2 has to be the script now, not Explorer's **Compress to ZIP file** - a
-manual zip would ship a stale `presskit.html`.
+Step 2 has to be the script, not Explorer's **Compress to ZIP file** - a manual
+zip would ship stale copies of all three generated files.
+
+PDF and DOCX need two libraries:
+
+```
+pip install reportlab python-docx
+```
+
+If either is missing the script says so, skips that format, and still builds the
+HTML and the ZIP.
 
 ## Adding a screenshot or GIF
 
@@ -47,10 +59,10 @@ them under a few MB.
 `##` headings become page sections *and* the nav. Three extras on top of normal
 markdown:
 
-| In the markdown | On the page | In presskit.html |
+| In the markdown | On the page | In the generated files |
 | --- | --- | --- |
-| `<!-- gallery: screenshots -->` | live thumbnail grid | linked list of the files |
-| `<!-- youtube: VIDEO_ID -->` | embedded player | skipped (link is in the copy) |
+| `<!-- gallery: screenshots -->` | live thumbnail grid | linked file list (HTML), file summary (PDF/DOCX) |
+| `<!-- youtube: VIDEO_ID -->` | embedded player | skipped, the link is in the copy beside it |
 | `TODO: Title - hint` | amber placeholder box | pink placeholder box |
 
 A list where every item is `- **Key:** value` renders as a fact table. When you

@@ -143,11 +143,13 @@ BELTFED began in October 2023 and has been developed part-time over three years.
 
 ## Quotes
 
-> "We've spent our careers building things that have to work at scale, whether that's game systems or backend infrastructure handling tens of thousands of requests a second. BELTFED is what happens when we point that experience at a factory full of guns instead."
+> "I always wanted to make an automation game, and when we prototyped the roguelike tower defense mashup it was obvious from the first playtest that it just worked - the pressure makes you build differently, and that turned out to be the whole game. The scale wasn't in the original design, but we kept cranking up the enemy count and it just kept getting more fun."
 >
-> - Toby Atkinson, Lead Designer of BELTFED
+> - Toby Atkinson, Lead Designer
 
-TODO: Quote from Troy Atkinson - left blank in the brief
+> "I love factory games, but I never have the patience to get to the end game. BELTFED flips the genre on its head and throws you straight into the action - from first belts down to late-game insanity in a single play session. It appeals to new players who don't have the time to commit to a more traditional automation title, and to veterans looking for a new challenge and a crazy change of pace."
+>
+> - Troy Atkinson, Developer
 
 ## Permissions
 

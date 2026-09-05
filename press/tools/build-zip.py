@@ -1,97 +1,103 @@
 #!/usr/bin/env python3
 
 import html
+import io
 import re
 import zipfile
 from pathlib import Path
 
+from PIL import Image
+
+try:
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.units import mm
+    from reportlab.platypus import (
+        Image as PdfImage,
+        KeepTogether,
+        Paragraph,
+        SimpleDocTemplate,
+        Spacer,
+        Table,
+        TableStyle,
+    )
+
+    HAVE_PDF = True
+except ImportError:
+    HAVE_PDF = False
+
+try:
+    import docx
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.opc.constants import RELATIONSHIP_TYPE as RT
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+    from docx.shared import Inches, Pt, RGBColor
+
+    HAVE_DOCX = True
+except ImportError:
+    HAVE_DOCX = False
+
+
 press = Path(__file__).resolve().parent.parent
 kit = press / "press-kit"
 source = press / "presskit.md"
-rendered = kit / "presskit.html"
 archive = press / "press-kit.zip"
+logo = kit / "logos" / "beltfed-logo-color.png"
 
 SKIP_NAMES = {".ds_store", "thumbs.db", ".gitkeep"}
 ASSET_FOLDERS = ("screenshots", "gifs", "logos", "key-art", "team")
 
+INK = "#1A1A1A"
+MUTED = "#6B6B6B"
+ACCENT = "#C2410C"
+RULE = "#D8D4D0"
+TODO_INK = "#C2185B"
+TODO_BG = "#FDE9F1"
 
-LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)\s]+)\)")
-BOLD_RE = re.compile(r"\*\*([^*]+)\*\*")
-CODE_RE = re.compile(r"`([^`]+)`")
+TOKEN_RE = re.compile(r"\[([^\]]+)\]\(([^)\s]+)\)|\*\*([^*]+)\*\*|`([^`]+)`")
 MARKER_RE = re.compile(r"<!--\s*(gallery|youtube)\s*:\s*([^\s>]+)\s*-->")
 COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.*)$")
 PAIR_RE = re.compile(r"^\*\*([^*]+):\*\*\s*(.*)$")
+BULLET_RE = re.compile(r"^[-*]\s+")
+BLOCK_END_RE = re.compile(r"^(#{1,6}\s|[-*]\s|>|@@M\d+@@|-{3,}$)")
 
 
-def inline(text: str) -> str:
-    out = html.escape(text, quote=False)
-    out = CODE_RE.sub(lambda m: f"<code>{m.group(1)}</code>", out)
-    out = LINK_RE.sub(
-        lambda m: f'<a href="{html.escape(m.group(2), quote=True)}">{m.group(1)}</a>', out
-    )
-    out = BOLD_RE.sub(lambda m: f"<strong>{m.group(1)}</strong>", out)
+def runs(text):
+    out, pos = [], 0
+    for match in TOKEN_RE.finditer(text):
+        if match.start() > pos:
+            out.append({"text": text[pos:match.start()]})
+        if match.group(1) is not None:
+            out.append({"text": match.group(1), "href": match.group(2)})
+        elif match.group(3) is not None:
+            out.append({"text": match.group(3), "bold": True})
+        else:
+            out.append({"text": match.group(4), "code": True})
+        pos = match.end()
+    if pos < len(text):
+        out.append({"text": text[pos:]})
     return out
 
 
-def format_bytes(size: int) -> str:
+def format_bytes(size):
     mb = size / 1048576
     return f"{mb:.1f} MB" if mb >= 1 else f"{round(size / 1024)} KB"
 
 
-def todo_html(line: str) -> str:
-    body = line[len("TODO:"):].strip()
-    title, _, hint = body.partition(" - ")
-    parts = [f'<p class="todo-title">{inline(title)}</p>']
-    if hint:
-        parts.append(f'<p class="todo-hint">{inline(hint)}</p>')
-    return '<div class="todo"><span class="todo-tag">TODO</span>' + "".join(parts) + "</div>"
+def parse(markdown, listing):
+    markers = []
 
-
-def list_html(items: list[str]) -> str:
-    pairs = [PAIR_RE.match(item) for item in items]
-    if all(pairs):
-        rows = "".join(
-            f"<dt>{inline(m.group(1))}</dt><dd>{inline(m.group(2))}</dd>" for m in pairs
-        )
-        return f'<dl class="facts">{rows}</dl>'
-    return "<ul>" + "".join(f"<li>{inline(item)}</li>" for item in items) + "</ul>"
-
-
-def quote_html(lines: list[str]) -> str:
-    attribution = ""
-    if lines and lines[-1].startswith("-"):
-        attribution = lines.pop().lstrip("- ").strip()
-    body = f"<p>{inline(' '.join(lines))}</p>"
-    if attribution:
-        body += f"<footer>- {inline(attribution)}</footer>"
-    return f"<blockquote>{body}</blockquote>"
-
-
-def gallery_html(folder: str, listing: dict[str, list[Path]]) -> str:
-    files = listing.get(folder, [])
-    if not files:
-        return f'<p class="empty">Nothing in <code>{folder}/</code> yet.</p>'
-    items = "".join(
-        f'<li><a href="{folder}/{f.name}">{f.name}</a>'
-        f"<span>{format_bytes(f.stat().st_size)}</span></li>"
-        for f in files
-    )
-    return f'<ul class="files">{items}</ul>'
-
-
-def render_body(markdown: str, listing: dict[str, list[Path]]) -> tuple[str, str, str]:
-    markers: list[tuple[str, str]] = []
-
-    def stash(match: re.Match) -> str:
+    def stash(match):
         markers.append((match.group(1), match.group(2)))
         return f"\n@@M{len(markers) - 1}@@\n"
 
-    text = MARKER_RE.sub(stash, markdown.replace("\r\n", "\n"))
-    text = COMMENT_RE.sub("", text)
-
+    text = COMMENT_RE.sub("", MARKER_RE.sub(stash, markdown.replace("\r\n", "\n")))
     lines = text.split("\n")
-    title, lead, out = "", "", []
+
+    title, lead, blocks = "", "", []
     i = 0
     while i < len(lines):
         line = lines[i].strip()
@@ -103,32 +109,43 @@ def render_body(markdown: str, listing: dict[str, list[Path]]) -> tuple[str, str
         if marker:
             kind, value = markers[int(marker.group(1))]
             if kind == "gallery":
-                out.append(gallery_html(value, listing))
+                files = listing.get(value, [])
+                blocks.append({
+                    "type": "files",
+                    "folder": value,
+                    "files": [(f.name, f.stat().st_size) for f in files],
+                })
             i += 1
             continue
 
         heading = HEADING_RE.match(line)
         if heading:
-            level, text_ = len(heading.group(1)), heading.group(2).strip()
+            level, body = len(heading.group(1)), heading.group(2).strip()
             if level == 1:
-                title = text_
+                title = body
             else:
-                tag = "h2" if level == 2 else f"h{level}"
-                out.append(f"<{tag}>{inline(text_)}</{tag}>")
+                blocks.append({"type": "heading", "level": level, "spans": runs(body)})
             i += 1
             continue
 
         if re.fullmatch(r"-{3,}|\*{3,}", line):
-            out.append("<hr />")
+            blocks.append({"type": "rule"})
             i += 1
             continue
 
-        if re.match(r"^[-*]\s+", line):
+        if BULLET_RE.match(line):
             items = []
-            while i < len(lines) and re.match(r"^[-*]\s+", lines[i].strip()):
-                items.append(re.sub(r"^[-*]\s+", "", lines[i].strip()))
+            while i < len(lines) and BULLET_RE.match(lines[i].strip()):
+                items.append(BULLET_RE.sub("", lines[i].strip()))
                 i += 1
-            out.append(list_html(items))
+            pairs = [PAIR_RE.match(item) for item in items]
+            if all(pairs):
+                blocks.append({
+                    "type": "facts",
+                    "rows": [(m.group(1), runs(m.group(2))) for m in pairs],
+                })
+            else:
+                blocks.append({"type": "list", "items": [runs(x) for x in items]})
             continue
 
         if line.startswith(">"):
@@ -136,32 +153,42 @@ def render_body(markdown: str, listing: dict[str, list[Path]]) -> tuple[str, str
             while i < len(lines) and lines[i].strip().startswith(">"):
                 quoted.append(re.sub(r"^>\s?", "", lines[i].strip()))
                 i += 1
-            out.append(quote_html(quoted))
+            attribution = ""
+            if quoted and quoted[-1].startswith("-"):
+                attribution = quoted.pop().lstrip("- ").strip()
+            blocks.append({
+                "type": "quote",
+                "spans": runs(" ".join(x for x in quoted if x)),
+                "attribution": attribution,
+            })
             continue
 
         block = []
         while i < len(lines):
             candidate = lines[i].strip()
-            if not candidate or re.match(r"^(#{1,6}\s|[-*]\s|>|@@M\d+@@|-{3,}$)", candidate):
+            if not candidate or BLOCK_END_RE.match(candidate):
                 break
             block.append(candidate)
             i += 1
 
         if block[0].startswith("TODO:"):
-            out.append(
-                '<div class="todos">'
-                + "".join(todo_html(b) for b in block if b.startswith("TODO:"))
-                + "</div>"
-            )
-        elif not out and not lead:
+            items = []
+            for entry in block:
+                if not entry.startswith("TODO:"):
+                    continue
+                body = entry[len("TODO:"):].strip()
+                head, _, hint = body.partition(" - ")
+                items.append((head, hint))
+            blocks.append({"type": "todos", "items": items})
+        elif not blocks and not lead:
             lead = " ".join(block)
         else:
-            out.append(f"<p>{inline(' '.join(block))}</p>")
+            blocks.append({"type": "para", "spans": runs(" ".join(block))})
 
-    return title, lead, "".join(out)
+    return title, lead, blocks
 
 
-PAGE = """<!doctype html>
+HTML_PAGE = """<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -252,8 +279,354 @@ PAGE = """<!doctype html>
 """
 
 
-# ------------------------------------------------------------------------ build
-def collect(folder: str) -> list[Path]:
+def html_spans(spans):
+    out = []
+    for span in spans:
+        text = html.escape(span["text"], quote=False)
+        if span.get("code"):
+            text = f"<code>{text}</code>"
+        if span.get("bold"):
+            text = f"<strong>{text}</strong>"
+        if span.get("href"):
+            text = f'<a href="{html.escape(span["href"], quote=True)}">{text}</a>'
+        out.append(text)
+    return "".join(out)
+
+
+def render_html(title, lead, blocks, target):
+    out = []
+    for block in blocks:
+        kind = block["type"]
+        if kind == "heading":
+            tag = f"h{block['level']}"
+            out.append(f"<{tag}>{html_spans(block['spans'])}</{tag}>")
+        elif kind == "para":
+            out.append(f"<p>{html_spans(block['spans'])}</p>")
+        elif kind == "rule":
+            out.append("<hr />")
+        elif kind == "list":
+            out.append(
+                "<ul>"
+                + "".join(f"<li>{html_spans(i)}</li>" for i in block["items"])
+                + "</ul>"
+            )
+        elif kind == "facts":
+            rows = "".join(
+                f"<dt>{html.escape(k, quote=False)}</dt><dd>{html_spans(v)}</dd>"
+                for k, v in block["rows"]
+            )
+            out.append(f'<dl class="facts">{rows}</dl>')
+        elif kind == "quote":
+            body = f"<p>{html_spans(block['spans'])}</p>"
+            if block["attribution"]:
+                body += f"<footer>- {html.escape(block['attribution'], quote=False)}</footer>"
+            out.append(f"<blockquote>{body}</blockquote>")
+        elif kind == "todos":
+            cards = ""
+            for head, hint in block["items"]:
+                cards += '<div class="todo"><span class="todo-tag">TODO</span>'
+                cards += f'<p class="todo-title">{html_spans(runs(head))}</p>'
+                if hint:
+                    cards += f'<p class="todo-hint">{html_spans(runs(hint))}</p>'
+                cards += "</div>"
+            out.append(f'<div class="todos">{cards}</div>')
+        elif kind == "files":
+            if not block["files"]:
+                out.append(
+                    f'<p class="empty">Nothing in <code>{block["folder"]}/</code> yet.</p>'
+                )
+            else:
+                items = "".join(
+                    f'<li><a href="{block["folder"]}/{name}">{name}</a>'
+                    f"<span>{format_bytes(size)}</span></li>"
+                    for name, size in block["files"]
+                )
+                out.append(f'<ul class="files">{items}</ul>')
+
+    target.write_text(
+        HTML_PAGE.format(
+            title=html.escape(title, quote=False),
+            lead=html.escape(lead, quote=False),
+            body="".join(out),
+        ),
+        encoding="utf-8",
+    )
+
+
+def logo_on_white(max_width=1200):
+    with Image.open(logo) as image:
+        image = image.convert("RGBA")
+        if image.width > max_width:
+            height = round(image.height * max_width / image.width)
+            image = image.resize((max_width, height), Image.LANCZOS)
+        flat = Image.new("RGB", image.size, "white")
+        flat.paste(image, mask=image.getchannel("A"))
+        buffer = io.BytesIO()
+        flat.save(buffer, "PNG", optimize=True)
+        buffer.seek(0)
+        return buffer, flat.width, flat.height
+
+
+def pdf_markup(spans):
+    out = []
+    for span in spans:
+        text = html.escape(span["text"], quote=False)
+        if span.get("code"):
+            text = f'<font face="Courier">{text}</font>'
+        if span.get("bold"):
+            text = f"<b>{text}</b>"
+        if span.get("href"):
+            href = html.escape(span["href"], quote=True)
+            text = f'<a href="{href}" color="{ACCENT}"><u>{text}</u></a>'
+        out.append(text)
+    return "".join(out)
+
+
+def pdf_styles():
+    base = ParagraphStyle(
+        "body", fontName="Helvetica", fontSize=9.5, leading=14,
+        textColor=colors.HexColor(INK), spaceAfter=7,
+    )
+    return {
+        "body": base,
+        "title": ParagraphStyle("title", parent=base, fontName="Helvetica-Bold",
+                                fontSize=17, leading=21, spaceAfter=2),
+        "lead": ParagraphStyle("lead", parent=base, fontSize=9, spaceAfter=14,
+                               textColor=colors.HexColor(MUTED)),
+        2: ParagraphStyle("h2", parent=base, fontName="Helvetica-Bold", fontSize=12.5,
+                          leading=16, spaceBefore=16, spaceAfter=8,
+                          textColor=colors.HexColor(ACCENT)),
+        3: ParagraphStyle("h3", parent=base, fontName="Helvetica-Bold", fontSize=10,
+                          leading=13, spaceBefore=11, spaceAfter=4),
+        4: ParagraphStyle("h4", parent=base, fontName="Helvetica-Bold", fontSize=9,
+                          leading=12, spaceBefore=9, spaceAfter=2),
+        "small": ParagraphStyle("small", parent=base, fontSize=8, leading=11.5,
+                                spaceAfter=9, textColor=colors.HexColor(MUTED)),
+        "quote": ParagraphStyle("quote", parent=base, fontSize=10, leading=15,
+                                leftIndent=9, spaceAfter=3),
+        "attrib": ParagraphStyle("attrib", parent=base, fontSize=8.5, leftIndent=9,
+                                 spaceAfter=10, textColor=colors.HexColor(MUTED)),
+        "key": ParagraphStyle("key", parent=base, fontName="Helvetica-Bold", fontSize=8,
+                              leading=11, spaceAfter=0, textColor=colors.HexColor(MUTED)),
+        "value": ParagraphStyle("value", parent=base, fontSize=9, leading=12, spaceAfter=0),
+        "todo": ParagraphStyle("todo", parent=base, fontSize=9, leading=12.5,
+                               spaceAfter=0, textColor=colors.HexColor(TODO_INK)),
+    }
+
+
+def render_pdf(title, lead, blocks, target):
+    style = pdf_styles()
+    story = []
+
+    image, width, height = logo_on_white()
+    display = 58 * mm
+    story.append(PdfImage(image, width=display, height=display * height / width))
+    story.append(Spacer(1, 7 * mm))
+    story.append(Paragraph(html.escape(title, quote=False), style["title"]))
+    story.append(Paragraph(html.escape(lead, quote=False), style["lead"]))
+
+    for block in blocks:
+        kind = block["type"]
+        if kind == "heading":
+            story.append(Paragraph(pdf_markup(block["spans"]), style[block["level"]]))
+        elif kind == "para":
+            story.append(Paragraph(pdf_markup(block["spans"]), style["body"]))
+        elif kind == "rule":
+            story.append(Spacer(1, 4 * mm))
+        elif kind == "list":
+            for item in block["items"]:
+                story.append(Paragraph("&bull;&nbsp;&nbsp;" + pdf_markup(item), style["body"]))
+        elif kind == "facts":
+            rows = [
+                [Paragraph(html.escape(key, quote=False).upper(), style["key"]),
+                 Paragraph(pdf_markup(value), style["value"])]
+                for key, value in block["rows"]
+            ]
+            table = Table(rows, colWidths=[38 * mm, 122 * mm], hAlign="LEFT")
+            table.setStyle(TableStyle([
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("TOPPADDING", (0, 0), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ("LEFTPADDING", (0, 0), (-1, -1), 5),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+                ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor(RULE)),
+                ("BACKGROUND", (0, 0), (0, -1), colors.HexColor("#FAF8F6")),
+            ]))
+            story.append(table)
+            story.append(Spacer(1, 5 * mm))
+        elif kind == "quote":
+            group = [Paragraph(pdf_markup(block["spans"]), style["quote"])]
+            if block["attribution"]:
+                group.append(Paragraph(
+                    "- " + html.escape(block["attribution"], quote=False), style["attrib"]
+                ))
+            story.append(KeepTogether(group))
+        elif kind == "todos":
+            rows = []
+            for head, hint in block["items"]:
+                text = f"<b>TODO</b>&nbsp;&nbsp;{pdf_markup(runs(head))}"
+                if hint:
+                    text += f" &ndash; {pdf_markup(runs(hint))}"
+                rows.append([Paragraph(text, style["todo"])])
+            table = Table(rows, colWidths=[160 * mm], hAlign="LEFT")
+            table.setStyle(TableStyle([
+                ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor(TODO_BG)),
+                ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor(TODO_INK)),
+                ("INNERGRID", (0, 0), (-1, -1), 0.3, colors.HexColor("#F3C6D9")),
+                ("TOPPADDING", (0, 0), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ("LEFTPADDING", (0, 0), (-1, -1), 6),
+            ]))
+            story.append(table)
+            story.append(Spacer(1, 5 * mm))
+        elif kind == "files":
+            if not block["files"]:
+                story.append(Paragraph(f"Nothing in {block['folder']}/ yet.", style["small"]))
+            else:
+                names = html.escape(", ".join(n for n, _ in block["files"]), quote=False)
+                total = format_bytes(sum(s for _, s in block["files"]))
+                story.append(Paragraph(
+                    f"<b>{len(block['files'])} files</b> in {block['folder']}/ "
+                    f"({total}) &ndash; {names}",
+                    style["small"],
+                ))
+
+    def page_number(canvas, _doc):
+        canvas.saveState()
+        canvas.setFont("Helvetica", 7.5)
+        canvas.setFillColor(colors.HexColor(MUTED))
+        canvas.drawRightString(A4[0] - 20 * mm, 12 * mm, str(canvas.getPageNumber()))
+        canvas.restoreState()
+
+    SimpleDocTemplate(
+        str(target), pagesize=A4,
+        leftMargin=20 * mm, rightMargin=20 * mm,
+        topMargin=18 * mm, bottomMargin=18 * mm,
+        title=title, author="Hello World Studios",
+    ).build(story, onFirstPage=page_number, onLaterPages=page_number)
+
+
+def docx_hyperlink(paragraph, url, text):
+    relationship = paragraph.part.relate_to(url, RT.HYPERLINK, is_external=True)
+    link = OxmlElement("w:hyperlink")
+    link.set(qn("r:id"), relationship)
+    run = OxmlElement("w:r")
+    properties = OxmlElement("w:rPr")
+    color = OxmlElement("w:color")
+    color.set(qn("w:val"), ACCENT.lstrip("#"))
+    properties.append(color)
+    underline = OxmlElement("w:u")
+    underline.set(qn("w:val"), "single")
+    properties.append(underline)
+    run.append(properties)
+    node = OxmlElement("w:t")
+    node.set(qn("xml:space"), "preserve")
+    node.text = text
+    run.append(node)
+    link.append(run)
+    paragraph._p.append(link)
+
+
+def docx_spans(paragraph, spans, size=None, color=None, italic=False):
+    for span in spans:
+        if span.get("href"):
+            docx_hyperlink(paragraph, span["href"], span["text"])
+            continue
+        run = paragraph.add_run(span["text"])
+        run.bold = bool(span.get("bold"))
+        run.italic = italic
+        if span.get("code"):
+            run.font.name = "Consolas"
+        if size:
+            run.font.size = Pt(size)
+        if color:
+            run.font.color.rgb = RGBColor.from_string(color.lstrip("#"))
+
+
+def render_docx(title, lead, blocks, target):
+    document = docx.Document()
+    document.styles["Normal"].font.name = "Calibri"
+    document.styles["Normal"].font.size = Pt(10)
+
+    image, _, _ = logo_on_white()
+    header = document.add_paragraph()
+    header.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    header.add_run().add_picture(image, width=Inches(2.3))
+
+    heading = document.add_paragraph().add_run(title)
+    heading.bold = True
+    heading.font.size = Pt(19)
+    heading.font.color.rgb = RGBColor.from_string(INK.lstrip("#"))
+
+    tagline = document.add_paragraph().add_run(lead)
+    tagline.font.size = Pt(9)
+    tagline.font.color.rgb = RGBColor.from_string(MUTED.lstrip("#"))
+
+    for block in blocks:
+        kind = block["type"]
+        if kind == "heading":
+            level = block["level"]
+            paragraph = document.add_heading(level=min(level, 4))
+            docx_spans(
+                paragraph, block["spans"],
+                size={2: 14, 3: 11, 4: 10}.get(level, 10),
+                color=ACCENT if level == 2 else INK,
+            )
+            for run in paragraph.runs:
+                run.bold = True
+        elif kind == "para":
+            docx_spans(document.add_paragraph(), block["spans"])
+        elif kind == "rule":
+            document.add_paragraph()
+        elif kind == "list":
+            for item in block["items"]:
+                docx_spans(document.add_paragraph(style="List Bullet"), item)
+        elif kind == "facts":
+            table = document.add_table(rows=0, cols=2)
+            table.style = "Table Grid"
+            for key, value in block["rows"]:
+                cells = table.add_row().cells
+                label = cells[0].paragraphs[0].add_run(key.upper())
+                label.bold = True
+                label.font.size = Pt(8)
+                label.font.color.rgb = RGBColor.from_string(MUTED.lstrip("#"))
+                docx_spans(cells[1].paragraphs[0], value, size=9.5)
+            document.add_paragraph()
+        elif kind == "quote":
+            paragraph = document.add_paragraph(style="Intense Quote")
+            docx_spans(paragraph, block["spans"])
+            if block["attribution"]:
+                attribution = document.add_paragraph().add_run("- " + block["attribution"])
+                attribution.italic = True
+                attribution.font.size = Pt(9)
+                attribution.font.color.rgb = RGBColor.from_string(MUTED.lstrip("#"))
+        elif kind == "todos":
+            for head, hint in block["items"]:
+                paragraph = document.add_paragraph()
+                tag = paragraph.add_run("TODO  ")
+                tag.bold = True
+                tag.font.color.rgb = RGBColor.from_string(TODO_INK.lstrip("#"))
+                docx_spans(paragraph, runs(head), color=TODO_INK)
+                if hint:
+                    docx_spans(paragraph, [{"text": " - " + hint}],
+                               color=TODO_INK, italic=True)
+        elif kind == "files":
+            paragraph = document.add_paragraph()
+            if not block["files"]:
+                docx_spans(paragraph, [{"text": f"Nothing in {block['folder']}/ yet."}],
+                           size=8.5, color=MUTED, italic=True)
+            else:
+                total = format_bytes(sum(s for _, s in block["files"]))
+                names = ", ".join(n for n, _ in block["files"])
+                docx_spans(paragraph, [
+                    {"text": f"{len(block['files'])} files", "bold": True},
+                    {"text": f" in {block['folder']}/ ({total}) - {names}"},
+                ], size=8.5, color=MUTED)
+
+    document.save(str(target))
+
+
+def collect(folder):
     directory = kit / folder
     if not directory.is_dir():
         return []
@@ -263,18 +636,22 @@ def collect(folder: str) -> list[Path]:
     )
 
 
-def main() -> None:
+def main():
     listing = {folder: collect(folder) for folder in ASSET_FOLDERS}
-    title, lead, body = render_body(source.read_text(encoding="utf-8"), listing)
-    rendered.write_text(
-        PAGE.format(
-            title=html.escape(title, quote=False),
-            lead=html.escape(lead, quote=False),
-            body=body,
-        ),
-        encoding="utf-8",
-    )
-    print(f"{rendered.name}: {rendered.stat().st_size / 1024:.0f} KB from {source.name}")
+    title, lead, blocks = parse(source.read_text(encoding="utf-8"), listing)
+
+    outputs = [
+        ("presskit.html", render_html, True),
+        ("presskit.pdf", render_pdf, HAVE_PDF),
+        ("presskit.docx", render_docx, HAVE_DOCX),
+    ]
+    for name, renderer, available in outputs:
+        target = kit / name
+        if not available:
+            print(f"{name}: skipped, pip install reportlab python-docx")
+            continue
+        renderer(title, lead, blocks, target)
+        print(f"{name}: {target.stat().st_size / 1024:.0f} KB from {source.name}")
 
     files = [
         path
