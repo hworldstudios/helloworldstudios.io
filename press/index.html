@@ -709,8 +709,15 @@
       .card--contain .card__shot img {
         object-fit: contain;
         padding: 0.75rem;
-        background: repeating-conic-gradient(#151518 0 25%, #1d1d21 0 50%) 50% /
+        background: repeating-conic-gradient(#e6e6ea 0 25%, #c9c9d1 0 50%) 50% /
           20px 20px;
+      }
+      .card--contain.card--ondark .card__shot img {
+        background: repeating-conic-gradient(#3c3c45 0 25%, #2c2c34 0 50%) 50% /
+          20px 20px;
+      }
+      .card--contain.card--opaque .card__shot img {
+        background: #0a0a0c;
       }
       .card__meta {
         display: flex;
@@ -1357,7 +1364,10 @@
         const LABELS = {
           "beltfed-key-art.jpg": "Key art - 8000×4000",
           "beltfed-logo-color.png": "BELTFED logo - color, transparent",
-          "hello-world-studios-logo.png": "Hello World Studios logo - color",
+          "hello-world-studios-logo.png":
+            "Hello World Studios logo - white, for dark backgrounds",
+          "hello-world-studios-logo-dark.png":
+            "Hello World Studios logo - dark, for light backgrounds",
           "icon-app.png": "App icon - 184×184",
           "icon-shortcut.png": "Shortcut icon - 256×256",
           "header-capsule.png": "Header capsule - 920×439",
@@ -1398,6 +1408,7 @@
           gifs: [],
           logos: [
             "beltfed-logo-color.png",
+            "hello-world-studios-logo-dark.png",
             "hello-world-studios-logo.png",
             "icon-app.png",
             "icon-shortcut.png",
@@ -1469,6 +1480,43 @@
           ];
         }
 
+        function tuneBackdrop(img, card) {
+          if (!card.classList.contains("card--contain")) return;
+          img.addEventListener("load", function () {
+            try {
+              const canvas = document.createElement("canvas");
+              const size = (canvas.width = canvas.height = 48);
+              const ctx = canvas.getContext("2d", { willReadFrequently: true });
+              ctx.drawImage(img, 0, 0, size, size);
+              const data = ctx.getImageData(0, 0, size, size).data;
+              let ink = 0;
+              let weight = 0;
+              let clear = 0;
+              let total = 0;
+              for (let i = 0; i < data.length; i += 4) {
+                total += 1;
+                const alpha = data[i + 3] / 255;
+                if (alpha < 0.6) {
+                  clear += 1;
+                  continue;
+                }
+                ink +=
+                  (0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]) *
+                  alpha;
+                weight += alpha;
+              }
+              if (clear / total < 0.02) {
+                card.classList.add("card--opaque");
+              } else if (weight && ink / weight > 140) {
+                card.classList.add("card--ondark");
+              }
+            } catch (err) {
+              // Canvas unavailable: the light checker stays, which suits the
+              // dark-inked majority of the kit.
+            }
+          }, { once: true });
+        }
+
         function applyChain(img, chain) {
           let step = 0;
           img.onerror = function () {
@@ -1516,6 +1564,7 @@
               img.alt = label;
               img.loading = "lazy";
               img.decoding = "async";
+              tuneBackdrop(img, card);
               applyChain(img, sourceChain(folder, file.name));
               trigger.appendChild(img);
 

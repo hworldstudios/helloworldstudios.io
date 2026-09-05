@@ -81,14 +81,13 @@ Every deployment feeds permanent progression: new weapons, new buildings, new up
 
 Video is **not** included in the press kit download - everything below streams or downloads from the links here, so the ZIP stays small.
 
-### Announcement trailer - 60-70s
+### Announcement trailer
 
-<!-- youtube: xNUYsOltxKE -->
+<!-- youtube: n4RiVblVQ90 -->
 
-**Watch or embed:** [youtu.be/xNUYsOltxKE](https://youtu.be/xNUYsOltxKE)
-
-TODO: Trailer 1080p MP4 - add Google Drive link
-TODO: Trailer 4K MP4 - add Google Drive link
+- **Watch or embed:** [youtu.be/n4RiVblVQ90](https://youtu.be/n4RiVblVQ90)
+- **4K MP4:** [Download from Google Drive](https://drive.google.com/file/d/14PxjfY7sSNz39gYBAymPmmnskpKc-n5K)
+- **1080p MP4:** [Download from Google Drive](https://drive.google.com/file/d/1Ei3-TWZRDzvugSAi9SKLuLqlZfToavAO)
 
 ### Raw gameplay capture - B-roll for creators
 
@@ -124,8 +123,6 @@ TODO: Nexus falling - the run ending
 
 <!-- gallery: logos -->
 
-TODO: hello-world-studios-logo-dark.png - dark version of the studio logo
-
 ### Key art & capsules
 
 <!-- gallery: key-art -->
@@ -135,9 +132,13 @@ TODO: hello-world-studios-logo-dark.png - dark version of the studio logo
 - **Toby Atkinson** - Developer · Lead Designer · [LinkedIn](https://www.linkedin.com/in/toby-atkinson/)
 - **Troy Atkinson** - Developer · Business & Operations · [LinkedIn](https://www.linkedin.com/in/troymakesgames/)
 
-Hello World Studios is a two-person independent studio founded by brothers Toby and Troy Atkinson. Based in Abu Dhabi but from Cornwall in the UK, they both studied Game Development at Falmouth University (Falmouth Games Academy), and between them have received the Supermassive Games Award, are alumni of the UK Games Fund's Tranzfuser program, and have worked on titles such as Firehawk FPV and STUFFED. Toby was one of three developers behind Firehawk FPV (TruePlayers, 2025), a roguelike that has sold over 10,000 units on Steam at 92% positive across 460+ reviews. Troy spent years in adtech, where he architected SDKs and real-time ad exchanges; alongside that performance-engineering work he has also worked on games such as STUFFED.
+Hello World Studios is a two-person independent studio founded by brothers Toby and Troy Atkinson. Cornish, now based in Abu Dhabi, both studied games development at Falmouth Games Academy.
 
-BELTFED began in October 2023 and has been developed part-time over three years. It combines Toby's game design background with Troy's experience in large-scale distributed systems engineering, a combination the team credits directly with the game's ability to run very large numbers of enemies on screen at once. BELTFED is the studio's debut title.
+Toby went straight into the indie industry after university, and was one of three developers behind the roguelike [Firehawk FPV Drone Fighter](https://store.steampowered.com/app/3365170/Firehawk_FPV_Drone_Fighter/) (TruePlayers, 2025). Troy went on to study entrepreneurship and became a staff engineer and shareholder at adtech startup [Audiomob](https://audiomob.com).
+
+BELTFED began in October 2023 as a part-time project, combining Toby's game design with Troy's experience building large-scale engineering systems - a combination the team credits directly with BELTFED's ability to simulate a ridiculous number of enemies.
+
+BELTFED is the studio's debut title.
 
 <!-- gallery: team -->
 
