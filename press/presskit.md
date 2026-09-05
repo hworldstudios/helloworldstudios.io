@@ -136,7 +136,7 @@ Hello World Studios is a two-person independent studio founded by brothers Toby 
 
 Toby went straight into the indie industry after university, and was one of three developers behind the roguelike [Firehawk FPV Drone Fighter](https://store.steampowered.com/app/3365170/Firehawk_FPV_Drone_Fighter/) (TruePlayers, 2025). Troy went on to study entrepreneurship and became a staff engineer and shareholder at adtech startup [Audiomob](https://audiomob.com).
 
-BELTFED began in October 2023 as a part-time project, combining Toby's game design with Troy's experience building large-scale engineering systems - a combination the team credits directly with BELTFED's ability to simulate a ridiculous number of enemies.
+BELTFED began in October 2023 as a part-time project, combining Toby's game design with Troy's experience building large-scale engineering systems - a combination the team credits directly with BELTFED's ability to simulate a ridiculous number of enemies on-screen at once.
 
 BELTFED is the studio's debut title.
 
