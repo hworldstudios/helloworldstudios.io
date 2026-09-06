@@ -18,6 +18,7 @@ AUTOMATE DEATH · Roguelike Factory Defense · PC (Steam) · Spring 2027
 
 - **Title:** BELTFED
 - **Hook:** AUTOMATE DEATH
+- **Steam page:** [store.steampowered.com - BELTFED](https://store.steampowered.com/app/4879420/BELTFED__Roguelike_Factory_Defense/)
 - **Genre:** Strategy, Automation, Roguelike
 - **Developer:** Hello World Studios
 - **Publisher:** TBC
@@ -29,7 +30,6 @@ AUTOMATE DEATH · Roguelike Factory Defense · PC (Steam) · Spring 2027
 - **Engine:** Unity (DOTS, Data-Oriented Technology Stack)
 - **Languages:** English (more TBC)
 - **Studio location:** Abu Dhabi, UAE (founders from Cornwall, UK)
-- **Steam page:** [store.steampowered.com - BELTFED](https://store.steampowered.com/app/4879420/BELTFED__Roguelike_Factory_Defense/)
 - **Website:** [beltfedgame.com](https://beltfedgame.com)
 - **Studio site:** [helloworldstudios.io](https://helloworldstudios.io)
 - **Discord:** [discord.gg/ZK87SK7H2Z](https://discord.gg/ZK87SK7H2Z)

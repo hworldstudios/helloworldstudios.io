@@ -244,6 +244,14 @@
       .subnav__inner::-webkit-scrollbar {
         display: none;
       }
+      /* Auto margins centre the chips when they fit, and collapse to zero when
+         they overflow - justify-content: center would scroll the first chip out
+         of reach on a narrow screen. */
+      .subnav__inner::before,
+      .subnav__inner::after {
+        content: "";
+        margin: auto;
+      }
       .subnav a {
         flex: none;
         padding: 0.35rem 0.65rem;
