@@ -771,6 +771,68 @@
         font-size: 0.9rem;
       }
 
+      .soon {
+        color: var(--todo);
+        font-weight: 600;
+      }
+
+      /* ---------- clips ---------- */
+
+      .clips {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1rem;
+        margin: 0 0 1.5rem;
+      }
+      .clip {
+        margin: 0;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--surface);
+        overflow: hidden;
+      }
+      .clip video {
+        display: block;
+        width: 100%;
+        height: auto;
+        background: #0a0a0c;
+      }
+      .clip__meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0.6rem 0.85rem;
+        border-top: 1px solid var(--border);
+      }
+      .clip__dl {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.4rem;
+        padding: 0.25rem 0.65rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition:
+          border-color 0.15s ease,
+          color 0.15s ease;
+      }
+      .clip__dl:hover,
+      .clip__dl:focus-visible {
+        border-color: var(--accent);
+        color: var(--text);
+      }
+      .clip__dl span {
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        text-transform: none;
+        opacity: 0.75;
+      }
+
       /* ---------- video embed ---------- */
 
       .embed {
@@ -1164,13 +1226,10 @@
               '<dl class="facts">' +
               pairs
                 .map(function (match) {
-                  return (
-                    "<dt>" +
-                    inline(match[1]) +
-                    "</dt><dd>" +
-                    inline(match[2]) +
-                    "</dd>"
-                  );
+                  const value = /^coming soon$/i.test(match[2].trim())
+                    ? '<span class="soon">' + escapeHtml(match[2].trim()) + "</span>"
+                    : inline(match[2]);
+                  return "<dt>" + inline(match[1]) + "</dt><dd>" + value + "</dd>";
                 })
                 .join("") +
               "</dl>"
@@ -1209,6 +1268,10 @@
           return '<div class="gallery" data-gallery="' + folder + '"></div>';
         }
 
+        function clipsHtml(folder) {
+          return '<div class="clips" data-clips="' + folder + '"></div>';
+        }
+
         function youtubeHtml(id) {
           return (
             '<div class="embed"><iframe src="https://www.youtube-nocookie.com/embed/' +
@@ -1223,7 +1286,7 @@
           let text = source
             .replace(/\r\n?/g, "\n")
             .replace(
-              /<!--\s*(gallery|youtube)\s*:\s*([^\s>]+)\s*-->/g,
+              /<!--\s*(gallery|youtube|clips)\s*:\s*([^\s>]+)\s*-->/g,
               function (all, kind, value) {
                 markers.push({ kind: kind, value: value });
                 return "\n@@M" + (markers.length - 1) + "@@\n";
@@ -1257,7 +1320,9 @@
               push(
                 entry.kind === "gallery"
                   ? galleryHtml(entry.value)
-                  : youtubeHtml(entry.value),
+                  : entry.kind === "clips"
+                    ? clipsHtml(entry.value)
+                    : youtubeHtml(entry.value),
               );
               i += 1;
               continue;
@@ -1599,6 +1664,104 @@
         }
 
         /* =====================================================
+         * Clips - a WebM playing inline, with both formats to download.
+         * Files live in press/gifs/, outside the kit: a pair of these is
+         * ~36 MB, which would push the ZIP past GitHub's 100 MB limit.
+         * ===================================================== */
+
+        const CLIP_FALLBACK = ["beltfed-gif1", "beltfed-gif2"];
+
+        function listClips(folder) {
+          const url =
+            "https://api.github.com/repos/" +
+            CONFIG.repo +
+            "/contents/press/" +
+            folder +
+            "?ref=" +
+            CONFIG.branch;
+          return fetch(url, { headers: { Accept: "application/vnd.github+json" } })
+            .then(function (res) {
+              if (!res.ok) throw new Error("HTTP " + res.status);
+              return res.json();
+            })
+            .then(function (body) {
+              if (!Array.isArray(body)) throw new Error("unexpected payload");
+              const sizes = {};
+              body.forEach(function (entry) {
+                if (entry.type === "file") sizes[entry.name] = entry.size;
+              });
+              const stems = body
+                .filter(function (entry) {
+                  return entry.type === "file" && /\.webm$/i.test(entry.name);
+                })
+                .map(function (entry) {
+                  return entry.name.replace(/\.[^.]+$/, "");
+                })
+                .sort(function (a, b) {
+                  return a.localeCompare(b, "en", { numeric: true });
+                });
+              return stems.map(function (stem) {
+                return { stem: stem, sizes: sizes };
+              });
+            })
+            .catch(function () {
+              return CLIP_FALLBACK.map(function (stem) {
+                return { stem: stem, sizes: {} };
+              });
+            });
+        }
+
+        function renderClips(node) {
+          const folder = node.dataset.clips;
+          node.innerHTML =
+            '<p class="gallery-status">Loading ' + folder + "…</p>";
+
+          listClips(folder).then(function (clips) {
+            node.innerHTML = "";
+            if (!clips.length) {
+              node.hidden = true;
+              return;
+            }
+            clips.forEach(function (clip) {
+              const figure = document.createElement("figure");
+              figure.className = "clip";
+
+              const video = document.createElement("video");
+              video.src = folder + "/" + clip.stem + ".webm";
+              video.autoplay = true;
+              video.loop = true;
+              video.muted = true;
+              video.playsInline = true;
+              video.controls = false;
+              video.preload = "metadata";
+              video.setAttribute("aria-label", clip.stem);
+              figure.appendChild(video);
+
+              const meta = document.createElement("figcaption");
+              meta.className = "clip__meta";
+              [["WebM", ".webm"], ["GIF", ".gif"]].forEach(function (pair) {
+                const name = clip.stem + pair[1];
+                const link = document.createElement("a");
+                link.className = "clip__dl";
+                link.href = folder + "/" + name;
+                link.setAttribute("download", "");
+                link.textContent = pair[0];
+                const size = clip.sizes[name];
+                if (size) {
+                  const tag = document.createElement("span");
+                  tag.textContent = formatBytes(size);
+                  link.appendChild(tag);
+                }
+                meta.appendChild(link);
+              });
+
+              figure.appendChild(meta);
+              node.appendChild(figure);
+            });
+          });
+        }
+
+        /* =====================================================
          * Lightbox
          * ===================================================== */
 
@@ -1791,6 +1954,7 @@
             });
 
             content.querySelectorAll("[data-gallery]").forEach(renderGallery);
+            content.querySelectorAll("[data-clips]").forEach(renderClips);
 
             const links = Array.prototype.slice.call(
               subnav.querySelectorAll("a"),

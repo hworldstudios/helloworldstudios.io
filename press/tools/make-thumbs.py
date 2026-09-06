@@ -5,7 +5,7 @@ from pathlib import Path
 
 from PIL import Image
 
-FOLDERS = {"screenshots": 1600, "key-art": 1000, "logos": 1000, "team": 800, "gifs": 0}
+FOLDERS = {"screenshots": 1600, "key-art": 1000, "logos": 1000, "team": 800}
 SUFFIXES = {".jpg", ".jpeg", ".png"}
 JPEG_QUALITY = 82
 

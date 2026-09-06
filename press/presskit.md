@@ -91,17 +91,21 @@ Video is **not** included in the press kit download - everything below streams o
 
 ### Gameplay footage
 
-TODO: Gameplay footage on YouTube - add link
-TODO: Gameplay capture 1080p MP4 - add Google Drive link
-TODO: Gameplay capture 4K MP4 - add Google Drive link
+- **Watch or embed:** Coming soon
+- **4K MP4:** Coming soon
+- **1080p MP4:** Coming soon
 
 ### Social cut
 
-TODO: Social cut - not yet available
+- **Watch or embed:** Coming soon
+- **4K MP4:** Coming soon
+- **1080p MP4:** Coming soon
 
 ### Vertical cut - 9:16
 
-TODO: Vertical cut for TikTok, Reels and Shorts - not yet available
+- **Watch or embed:** Coming soon
+- **4K MP4:** Coming soon
+- **1080p MP4:** Coming soon
 
 ## Screenshots
 
@@ -109,13 +113,7 @@ TODO: Vertical cut for TikTok, Reels and Shorts - not yet available
 
 ## GIFs
 
-<!-- gallery: gifs -->
-
-TODO: Swarm impact - the wave hitting the line
-TODO: Belt to barrel - ore in one end, bullets out the other
-TODO: Flamethrower - sustained burn on a choke point
-TODO: Upgrade pick - run-defining card selection
-TODO: Nexus falling - the run ending
+<!-- clips: gifs -->
 
 ## Logos & key art
 

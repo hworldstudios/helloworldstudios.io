@@ -8,13 +8,15 @@ maintained twice, and nothing in `index.html` needs editing to add content.
 press/
   index.html          the page - renders presskit.md + press-kit/ at runtime
   presskit.md         ALL copy. Edit this and nothing else.
+  gifs/               *.webm + *.gif clips. NOT in the ZIP - a pair is ~36 MB,
+                      which would push the archive past GitHub's 100 MB limit.
+                      Linked from the page instead, like video.
   press-kit/          <- this folder IS the download
     presskit.html       GENERATED from presskit.md - don't hand-edit
     presskit.pdf        GENERATED - print/email version
     presskit.docx       GENERATED - editable version
     README.txt          notes for journalists
     screenshots/        *.jpg
-    gifs/               *.gif
     logos/              *.png
     key-art/            *.png, *.jpg
     team/               *.jpg
@@ -46,13 +48,18 @@ pip install reportlab python-docx
 If either is missing the script says so, skips that format, and still builds the
 HTML and the ZIP.
 
-## Adding a screenshot or GIF
+## Adding a screenshot
 
-Drop the file in `press-kit/screenshots/` or `press-kit/gifs/` using
-lowercase-kebab-case names. The page lists the folder live via the GitHub
-contents API, so it appears on its own once pushed, and `presskit.html` picks it
-up on the next build. GIFs are served as-is so the animation survives - keep
-them under a few MB.
+Drop it in `press-kit/screenshots/` using a lowercase-kebab-case name. The page
+lists the folder live via the GitHub contents API, so it appears on its own once
+pushed, and the generated files pick it up on the next build.
+
+## Adding a GIF
+
+Put a matching pair in `press/gifs/` - `name.webm` and `name.gif`. They are
+paired by filename, so nothing else needs naming or registering. The page plays
+the WebM inline (autoplay, muted, looping) and offers both formats to download;
+the generated kit files link them on the live site.
 
 ## Editing the copy
 
@@ -63,10 +70,12 @@ markdown:
 | --- | --- | --- |
 | `<!-- gallery: screenshots -->` | live thumbnail grid | linked file list (HTML), file summary (PDF/DOCX) |
 | `<!-- youtube: VIDEO_ID -->` | embedded player | skipped, the link is in the copy beside it |
+| `<!-- clips: gifs -->` | inline WebM players + downloads | linked WebM/GIF pairs |
 | `TODO: Title - hint` | amber placeholder box | pink placeholder box |
 
-A list where every item is `- **Key:** value` renders as a fact table. When you
-fill in a TODO, delete its line.
+A list where every item is `- **Key:** value` renders as a fact table. A value
+of exactly `Coming soon` renders pink in all four outputs. When you fill in a
+TODO, delete its line.
 
 ## Buttons in the hero
 

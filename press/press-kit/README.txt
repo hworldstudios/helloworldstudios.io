@@ -11,17 +11,17 @@ presskit.html   The full kit copy: fact sheet, descriptions, features,
 presskit.pdf    Same copy, print-friendly, for attaching to an email.
 presskit.docx   Same copy, editable in Word or Google Docs.
 screenshots/    Full-resolution stills, 3840x2160.
-gifs/           Short loops for articles and social posts.
 logos/          BELTFED and Hello World Studios logos plus the app and
                 shortcut icons, transparent PNG.
 key-art/        Key art and the Steam capsule set.
 team/           Press photos of the team.
 
 
-VIDEO
------
-Video is not included in this download. Trailer, gameplay capture and
-social cuts are linked from the press page:
+VIDEO AND GIFS
+--------------
+Video and GIFs are not included in this download - they are far too
+large for it. The trailer, gameplay capture and the looping GIFs (as
+both WebM and GIF) are all linked from the press page:
 
     https://helloworldstudios.io/press
 
@@ -33,13 +33,6 @@ and streams. Video coverage, including monetized videos and streams, is
 welcome and permitted.
 
 Please link to the Steam page.
-
-
-LOGO USAGE
-----------
-Don't stretch, recolor, or add effects to the logo - scale it
-proportionally and leave it as supplied. Keep clear space around it, and
-don't place it over the key art in a way that obscures the swarm.
 
 
 CONTACT

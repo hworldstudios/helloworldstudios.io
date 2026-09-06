@@ -47,7 +47,9 @@ archive = press / "press-kit.zip"
 logo = kit / "logos" / "beltfed-logo-color.png"
 
 SKIP_NAMES = {".ds_store", "thumbs.db", ".gitkeep"}
-ASSET_FOLDERS = ("screenshots", "gifs", "logos", "key-art", "team")
+ASSET_FOLDERS = ("screenshots", "logos", "key-art", "team")
+CLIPS_DIR = press / "gifs"
+SITE_CLIPS = "https://helloworldstudios.io/press/gifs/"
 
 INK = "#1A1A1A"
 MUTED = "#6B6B6B"
@@ -57,7 +59,7 @@ TODO_INK = "#C2185B"
 TODO_BG = "#FDE9F1"
 
 TOKEN_RE = re.compile(r"\[([^\]]+)\]\(([^)\s]+)\)|\*\*([^*]+)\*\*|`([^`]+)`")
-MARKER_RE = re.compile(r"<!--\s*(gallery|youtube)\s*:\s*([^\s>]+)\s*-->")
+MARKER_RE = re.compile(r"<!--\s*(gallery|youtube|clips)\s*:\s*([^\s>]+)\s*-->")
 COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.*)$")
 PAIR_RE = re.compile(r"^\*\*([^*]+):\*\*\s*(.*)$")
@@ -80,6 +82,27 @@ def runs(text):
     if pos < len(text):
         out.append({"text": text[pos:]})
     return out
+
+
+def plain(spans):
+    return "".join(s["text"] for s in spans)
+
+
+def is_soon(spans):
+    return plain(spans).strip().lower() == "coming soon"
+
+
+def collect_clips():
+    if not CLIPS_DIR.is_dir():
+        return []
+    clips = []
+    for webm in sorted(CLIPS_DIR.glob("*.webm")):
+        gif = webm.with_suffix(".gif")
+        files = [("WebM", webm.name, webm.stat().st_size)]
+        if gif.exists():
+            files.append(("GIF", gif.name, gif.stat().st_size))
+        clips.append({"stem": webm.stem, "files": files})
+    return clips
 
 
 def format_bytes(size):
@@ -115,6 +138,8 @@ def parse(markdown, listing):
                     "folder": value,
                     "files": [(f.name, f.stat().st_size) for f in files],
                 })
+            elif kind == "clips":
+                blocks.append({"type": "clips", "clips": collect_clips()})
             i += 1
             continue
 
@@ -248,6 +273,21 @@ HTML_PAGE = """<!doctype html>
   .files li {{ display: flex; justify-content: space-between; gap: 1rem; font-size: .85rem; margin: 0; }}
   .files span {{ flex: none; color: var(--muted); font-size: .78rem; }}
   .empty {{ color: var(--muted); font-size: .9rem; }}
+  .soon {{ color: var(--todo); font-weight: 600; }}
+  .clips {{
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem; margin: 0 0 1.5rem;
+  }}
+  .clip {{ margin: 0; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); overflow: hidden; }}
+  .clip video {{ display: block; width: 100%; height: auto; background: #0a0a0c; }}
+  .clip-meta {{ display: flex; flex-wrap: wrap; gap: .5rem; padding: .6rem .85rem; border-top: 1px solid var(--border); }}
+  .clip-dl {{
+    display: inline-flex; align-items: baseline; gap: .4rem; padding: .25rem .65rem;
+    border: 1px solid var(--border); border-radius: 999px; color: var(--muted);
+    text-decoration: none; font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase;
+  }}
+  .clip-dl span {{ font-weight: 500; letter-spacing: .02em; text-transform: none; opacity: .75; }}
   .todos {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: .6rem; margin: 0 0 1.5rem; }}
   .todo {{ padding: .8rem 1rem; border: 1px dashed var(--todo); border-radius: 10px; background: rgba(255,77,157,.08); }}
   .todo-tag {{
@@ -311,10 +351,14 @@ def render_html(title, lead, blocks, target):
                 + "</ul>"
             )
         elif kind == "facts":
-            rows = "".join(
-                f"<dt>{html.escape(k, quote=False)}</dt><dd>{html_spans(v)}</dd>"
-                for k, v in block["rows"]
-            )
+            rows = ""
+            for key, value in block["rows"]:
+                cell = (
+                    f'<span class="soon">{html.escape(plain(value), quote=False)}</span>'
+                    if is_soon(value)
+                    else html_spans(value)
+                )
+                rows += f"<dt>{html.escape(key, quote=False)}</dt><dd>{cell}</dd>"
             out.append(f'<dl class="facts">{rows}</dl>')
         elif kind == "quote":
             body = f"<p>{html_spans(block['spans'])}</p>"
@@ -330,6 +374,22 @@ def render_html(title, lead, blocks, target):
                     cards += f'<p class="todo-hint">{html_spans(runs(hint))}</p>'
                 cards += "</div>"
             out.append(f'<div class="todos">{cards}</div>')
+        elif kind == "clips":
+            cards = ""
+            for clip in block["clips"]:
+                links = "".join(
+                    f'<a class="clip-dl" href="{SITE_CLIPS}{name}">{label}'
+                    f"<span>{format_bytes(size)}</span></a>"
+                    for label, name, size in clip["files"]
+                )
+                cards += (
+                    '<figure class="clip">'
+                    f'<video src="{SITE_CLIPS}{clip["stem"]}.webm" autoplay loop muted '
+                    'playsinline preload="metadata"></video>'
+                    f'<figcaption class="clip-meta">{links}</figcaption>'
+                    "</figure>"
+                )
+            out.append(f'<div class="clips">{cards}</div>')
         elif kind == "files":
             if not block["files"]:
                 out.append(
@@ -439,7 +499,12 @@ def render_pdf(title, lead, blocks, target):
         elif kind == "facts":
             rows = [
                 [Paragraph(html.escape(key, quote=False).upper(), style["key"]),
-                 Paragraph(pdf_markup(value), style["value"])]
+                 Paragraph(
+                     f'<font color="{TODO_INK}">{html.escape(plain(value), quote=False)}</font>'
+                     if is_soon(value)
+                     else pdf_markup(value),
+                     style["value"],
+                 )]
                 for key, value in block["rows"]
             ]
             table = Table(rows, colWidths=[38 * mm, 122 * mm], hAlign="LEFT")
@@ -479,6 +544,17 @@ def render_pdf(title, lead, blocks, target):
             ]))
             story.append(table)
             story.append(Spacer(1, 5 * mm))
+        elif kind == "clips":
+            for clip in block["clips"]:
+                links = "  ".join(
+                    f'<a href="{SITE_CLIPS}{name}" color="{ACCENT}"><u>{label}</u></a> '
+                    f"({format_bytes(size)})"
+                    for label, name, size in clip["files"]
+                )
+                story.append(Paragraph(
+                    f"<b>{html.escape(clip['stem'], quote=False)}</b> &ndash; {links}",
+                    style["small"],
+                ))
         elif kind == "files":
             if not block["files"]:
                 story.append(Paragraph(f"Nothing in {block['folder']}/ yet.", style["small"]))
@@ -590,7 +666,11 @@ def render_docx(title, lead, blocks, target):
                 label.bold = True
                 label.font.size = Pt(8)
                 label.font.color.rgb = RGBColor.from_string(MUTED.lstrip("#"))
-                docx_spans(cells[1].paragraphs[0], value, size=9.5)
+                if is_soon(value):
+                    docx_spans(cells[1].paragraphs[0], [{"text": plain(value)}],
+                               size=9.5, color=TODO_INK)
+                else:
+                    docx_spans(cells[1].paragraphs[0], value, size=9.5)
             document.add_paragraph()
         elif kind == "quote":
             paragraph = document.add_paragraph(style="Intense Quote")
@@ -610,6 +690,17 @@ def render_docx(title, lead, blocks, target):
                 if hint:
                     docx_spans(paragraph, [{"text": " - " + hint}],
                                color=TODO_INK, italic=True)
+        elif kind == "clips":
+            for clip in block["clips"]:
+                paragraph = document.add_paragraph()
+                docx_spans(paragraph, [{"text": clip["stem"] + "  ", "bold": True}],
+                           size=8.5)
+                for index, (label, name, size) in enumerate(clip["files"]):
+                    if index:
+                        docx_spans(paragraph, [{"text": "  "}], size=8.5, color=MUTED)
+                    docx_spans(paragraph, [{"text": label, "href": SITE_CLIPS + name}])
+                    docx_spans(paragraph, [{"text": f" ({format_bytes(size)})"}],
+                               size=8.5, color=MUTED)
         elif kind == "files":
             paragraph = document.add_paragraph()
             if not block["files"]:
