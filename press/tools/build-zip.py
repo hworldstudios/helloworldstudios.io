@@ -2,6 +2,7 @@
 
 import html
 import io
+import json
 import re
 import zipfile
 from pathlib import Path
@@ -44,6 +45,7 @@ press = Path(__file__).resolve().parent.parent
 kit = press / "press-kit"
 source = press / "presskit.md"
 archive = press / "press-kit.zip"
+manifest = press / "manifest.json"
 logo = kit / "logos" / "beltfed-logo-color.png"
 
 SKIP_NAMES = {".ds_store", "thumbs.db", ".gitkeep"}
@@ -727,8 +729,38 @@ def collect(folder):
     )
 
 
+def write_manifest(listing, clips):
+    manifest.write_text(
+        json.dumps(
+            {
+                "folders": {
+                    folder: [
+                        {"name": f.name, "size": f.stat().st_size} for f in files
+                    ]
+                    for folder, files in listing.items()
+                },
+                "clips": [
+                    {
+                        "stem": clip["stem"],
+                        "files": [
+                            {"label": label, "name": name, "size": size}
+                            for label, name, size in clip["files"]
+                        ],
+                    }
+                    for clip in clips
+                ],
+            },
+            indent=1,
+        ),
+        encoding="utf-8",
+    )
+    total = sum(len(v) for v in listing.values()) + len(clips)
+    print(f"{manifest.name}: {total} entries")
+
+
 def main():
     listing = {folder: collect(folder) for folder in ASSET_FOLDERS}
+    write_manifest(listing, collect_clips())
     title, lead, blocks = parse(source.read_text(encoding="utf-8"), listing)
 
     outputs = [

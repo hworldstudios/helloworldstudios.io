@@ -66,6 +66,8 @@
         // Source of truth for all page copy. Lives outside press-kit/ so it
         // stays out of the ZIP; build-zip.py renders it to presskit.html there.
         markdown: "presskit.md",
+        // Written by tools/build-zip.py; lists every gallery file and clip.
+        manifest: "manifest.json",
         // Zip of press-kit/ - right-click the folder, "Compress to ZIP file",
         // and Windows names it exactly this.
         zip: "press-kit.zip",
@@ -79,10 +81,6 @@
         // Google Drive folder journalists can browse instead of downloading.
         drive:
           "https://drive.google.com/drive/folders/11YrkhNBw6QvSOOmjAsjG5kxojSsHngpa",
-        // Live folder listings come from the GitHub contents API, so any file
-        // dropped into press-kit/[folder]/ shows up here with no HTML edit.
-        repo: "hworldstudios/helloworldstudios.io",
-        branch: "main",
       };
     </script>
 
@@ -1426,6 +1424,37 @@
         // folder - it writes PNG only for images that really use transparency,
         // JPEG for everything else. Guessing right just avoids a wasted request;
         // the other extension and then the original are still tried after it.
+        // press/manifest.json is written by tools/build-zip.py and lists exactly
+        // what is on disk, so the page always matches the last build. Reading the
+        // GitHub API instead meant galleries showed the last *pushed* state.
+        let manifestPromise = null;
+
+        function loadManifest() {
+          if (!manifestPromise) {
+            manifestPromise = fetch(CONFIG.manifest, { cache: "no-cache" })
+              .then(function (res) {
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                return res.json();
+              })
+              .catch(function () {
+                return { folders: {}, clips: [] };
+              });
+          }
+          return manifestPromise;
+        }
+
+        function listFolder(folder) {
+          return loadManifest().then(function (data) {
+            return (data.folders || {})[folder] || [];
+          });
+        }
+
+        function listClips() {
+          return loadManifest().then(function (data) {
+            return data.clips || [];
+          });
+        }
+
         const GALLERY_OPTS = {
           screenshots: { contain: false, tight: false, thumb: "jpg" },
           gifs: { contain: false, tight: false, thumb: "jpg" },
@@ -1458,86 +1487,6 @@
           "toby-atkinson.jpg": "Toby Atkinson - press photo",
           "troy-atkinson.jpg": "Troy Atkinson - press photo",
         };
-
-        // Used when the GitHub API is unavailable (rate limited, offline,
-        // opened from file://). Regenerated content still lists fine from the
-        // API; this is only a floor.
-        const FALLBACK = {
-          screenshots: [
-            "beltfed-screenshot-01.jpg",
-            "beltfed-screenshot-02.jpg",
-            "beltfed-screenshot-03.jpg",
-            "beltfed-screenshot-04.jpg",
-            "beltfed-screenshot-05.jpg",
-            "beltfed-screenshot-06.jpg",
-            "beltfed-screenshot-07.jpg",
-            "beltfed-screenshot-08.jpg",
-            "beltfed-screenshot-09.jpg",
-            "beltfed-screenshot-10.jpg",
-            "beltfed-screenshot-11.jpg",
-            "beltfed-screenshot-12.jpg",
-            "beltfed-screenshot-13.jpg",
-            "beltfed-screenshot-14.jpg",
-            "beltfed-screenshot-15.jpg",
-            "beltfed-screenshot-16.jpg",
-          ],
-          gifs: [],
-          logos: [
-            "beltfed-logo-color.png",
-            "hello-world-studios-logo-dark.png",
-            "hello-world-studios-logo.png",
-            "icon-app.png",
-            "icon-shortcut.png",
-          ],
-          "key-art": [
-            "beltfed-key-art.jpg",
-            "bundle-assets.png",
-            "header-capsule.png",
-            "library-hero.png",
-            "library-logo.png",
-            "main-capsule.png",
-            "page-background.png",
-            "small-capsule-a.png",
-            "small-capsule-b.png",
-            "vertical-capsule.png",
-          ],
-          team: ["toby-atkinson.jpg", "troy-atkinson.jpg"],
-        };
-
-        function listFolder(folder) {
-          const url =
-            "https://api.github.com/repos/" +
-            CONFIG.repo +
-            "/contents/press/press-kit/" +
-            folder +
-            "?ref=" +
-            CONFIG.branch;
-          return fetch(url, {
-            headers: { Accept: "application/vnd.github+json" },
-          })
-            .then(function (res) {
-              if (!res.ok) throw new Error("HTTP " + res.status);
-              return res.json();
-            })
-            .then(function (body) {
-              if (!Array.isArray(body)) throw new Error("unexpected payload");
-              return body
-                .filter(function (entry) {
-                  return entry.type === "file" && IMAGE_RE.test(entry.name);
-                })
-                .map(function (entry) {
-                  return { name: entry.name, size: entry.size };
-                })
-                .sort(function (a, b) {
-                  return a.name.localeCompare(b.name, "en", { numeric: true });
-                });
-            })
-            .catch(function () {
-              return (FALLBACK[folder] || []).map(function (name) {
-                return { name: name, size: 0 };
-              });
-            });
-        }
 
         // Thumbnails live outside press-kit/ so the ZIP stays clean, and they are
         // optional: fall back to the original if one hasn't been generated yet.
@@ -1680,54 +1629,31 @@
          * ~36 MB, which would push the ZIP past GitHub's 100 MB limit.
          * ===================================================== */
 
-        const CLIP_FALLBACK = ["beltfed-gif1", "beltfed-gif2"];
-
-        function listClips(folder) {
-          const url =
-            "https://api.github.com/repos/" +
-            CONFIG.repo +
-            "/contents/press/" +
-            folder +
-            "?ref=" +
-            CONFIG.branch;
-          return fetch(url, { headers: { Accept: "application/vnd.github+json" } })
-            .then(function (res) {
-              if (!res.ok) throw new Error("HTTP " + res.status);
-              return res.json();
-            })
-            .then(function (body) {
-              if (!Array.isArray(body)) throw new Error("unexpected payload");
-              const sizes = {};
-              body.forEach(function (entry) {
-                if (entry.type === "file") sizes[entry.name] = entry.size;
-              });
-              const stems = body
-                .filter(function (entry) {
-                  return entry.type === "file" && /\.webm$/i.test(entry.name);
-                })
-                .map(function (entry) {
-                  return entry.name.replace(/\.[^.]+$/, "");
-                })
-                .sort(function (a, b) {
-                  return a.localeCompare(b, "en", { numeric: true });
-                });
-              return stems.map(function (stem) {
-                return { stem: stem, sizes: sizes };
-              });
-            })
-            .catch(function () {
-              return CLIP_FALLBACK.map(function (stem) {
-                return { stem: stem, sizes: {} };
-              });
-            });
-        }
+        // Five autoplaying loops is tens of MB if they all load at once, so
+        // each one gets its source only as it comes into view.
+        const clipLoader =
+          "IntersectionObserver" in window
+            ? new IntersectionObserver(
+                function (entries, observer) {
+                  entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) return;
+                    const video = entry.target;
+                    if (!video.src && video.dataset.src) {
+                      video.src = video.dataset.src;
+                    }
+                    observer.unobserve(video);
+                  });
+                },
+                { rootMargin: "300px" },
+              )
+            : null;
 
         function renderClips(node) {
           const folder = node.dataset.clips;
           node.innerHTML =
             '<p class="gallery-status">Loading ' + folder + "…</p>";
 
-          listClips(folder).then(function (clips) {
+          listClips().then(function (clips) {
             node.innerHTML = "";
             if (!clips.length) {
               node.hidden = true;
@@ -1738,7 +1664,12 @@
               figure.className = "clip";
 
               const video = document.createElement("video");
-              video.src = folder + "/" + clip.stem + ".webm";
+              const source = folder + "/" + clip.stem + ".webm";
+              if (clipLoader) {
+                video.dataset.src = source;
+              } else {
+                video.src = source;
+              }
               video.autoplay = true;
               video.loop = true;
               video.muted = true;
@@ -1746,21 +1677,20 @@
               video.controls = false;
               video.preload = "metadata";
               video.setAttribute("aria-label", clip.stem);
+              if (clipLoader) clipLoader.observe(video);
               figure.appendChild(video);
 
               const meta = document.createElement("figcaption");
               meta.className = "clip__meta";
-              [["WebM", ".webm"], ["GIF", ".gif"]].forEach(function (pair) {
-                const name = clip.stem + pair[1];
+              clip.files.forEach(function (file) {
                 const link = document.createElement("a");
                 link.className = "clip__dl";
-                link.href = folder + "/" + name;
+                link.href = folder + "/" + file.name;
                 link.setAttribute("download", "");
-                link.textContent = pair[0];
-                const size = clip.sizes[name];
-                if (size) {
+                link.textContent = file.label;
+                if (file.size) {
                   const tag = document.createElement("span");
-                  tag.textContent = formatBytes(size);
+                  tag.textContent = formatBytes(file.size);
                   link.appendChild(tag);
                 }
                 meta.appendChild(link);

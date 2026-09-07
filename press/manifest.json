@@ -1,0 +1,221 @@
+{
+ "folders": {
+  "screenshots": [
+   {
+    "name": "beltfed-screenshot-01.jpg",
+    "size": 1817137
+   },
+   {
+    "name": "beltfed-screenshot-02.jpg",
+    "size": 1627594
+   },
+   {
+    "name": "beltfed-screenshot-03.jpg",
+    "size": 2395899
+   },
+   {
+    "name": "beltfed-screenshot-04.jpg",
+    "size": 2559861
+   },
+   {
+    "name": "beltfed-screenshot-05.jpg",
+    "size": 2169933
+   },
+   {
+    "name": "beltfed-screenshot-06.jpg",
+    "size": 2488223
+   },
+   {
+    "name": "beltfed-screenshot-07.jpg",
+    "size": 1615221
+   },
+   {
+    "name": "beltfed-screenshot-08.jpg",
+    "size": 2023214
+   },
+   {
+    "name": "beltfed-screenshot-09.jpg",
+    "size": 681373
+   },
+   {
+    "name": "beltfed-screenshot-10.jpg",
+    "size": 3238934
+   },
+   {
+    "name": "beltfed-screenshot-11.jpg",
+    "size": 2316313
+   },
+   {
+    "name": "beltfed-screenshot-12.jpg",
+    "size": 2496483
+   },
+   {
+    "name": "beltfed-screenshot-13.jpg",
+    "size": 2571155
+   },
+   {
+    "name": "beltfed-screenshot-14.jpg",
+    "size": 2211135
+   },
+   {
+    "name": "beltfed-screenshot-15.jpg",
+    "size": 2278951
+   },
+   {
+    "name": "beltfed-screenshot-16.jpg",
+    "size": 2783551
+   }
+  ],
+  "logos": [
+   {
+    "name": "beltfed-logo-color.png",
+    "size": 3733460
+   },
+   {
+    "name": "hello-world-studios-logo-dark.png",
+    "size": 38735
+   },
+   {
+    "name": "hello-world-studios-logo.png",
+    "size": 37281
+   },
+   {
+    "name": "icon-app.png",
+    "size": 37537
+   },
+   {
+    "name": "icon-shortcut.png",
+    "size": 61769
+   }
+  ],
+  "key-art": [
+   {
+    "name": "beltfed-key-art.jpg",
+    "size": 4916222
+   },
+   {
+    "name": "bundle-assets.png",
+    "size": 281099
+   },
+   {
+    "name": "header-capsule.png",
+    "size": 690789
+   },
+   {
+    "name": "library-hero.png",
+    "size": 5331033
+   },
+   {
+    "name": "library-logo.png",
+    "size": 387824
+   },
+   {
+    "name": "main-capsule.png",
+    "size": 1313490
+   },
+   {
+    "name": "page-background.png",
+    "size": 1725951
+   },
+   {
+    "name": "small-capsule-a.png",
+    "size": 164153
+   },
+   {
+    "name": "small-capsule-b.png",
+    "size": 155972
+   },
+   {
+    "name": "vertical-capsule.png",
+    "size": 1176534
+   }
+  ],
+  "team": [
+   {
+    "name": "toby-atkinson.jpg",
+    "size": 196782
+   },
+   {
+    "name": "troy-atkinson.jpg",
+    "size": 149862
+   }
+  ]
+ },
+ "clips": [
+  {
+   "stem": "beltfed-gif1",
+   "files": [
+    {
+     "label": "WebM",
+     "name": "beltfed-gif1.webm",
+     "size": 19224576
+    },
+    {
+     "label": "GIF",
+     "name": "beltfed-gif1.gif",
+     "size": 93666493
+    }
+   ]
+  },
+  {
+   "stem": "beltfed-gif2",
+   "files": [
+    {
+     "label": "WebM",
+     "name": "beltfed-gif2.webm",
+     "size": 2636272
+    },
+    {
+     "label": "GIF",
+     "name": "beltfed-gif2.gif",
+     "size": 31546881
+    }
+   ]
+  },
+  {
+   "stem": "beltfed-gif3",
+   "files": [
+    {
+     "label": "WebM",
+     "name": "beltfed-gif3.webm",
+     "size": 6638330
+    },
+    {
+     "label": "GIF",
+     "name": "beltfed-gif3.gif",
+     "size": 76061816
+    }
+   ]
+  },
+  {
+   "stem": "beltfed-gif4",
+   "files": [
+    {
+     "label": "WebM",
+     "name": "beltfed-gif4.webm",
+     "size": 4284364
+    },
+    {
+     "label": "GIF",
+     "name": "beltfed-gif4.gif",
+     "size": 40698361
+    }
+   ]
+  },
+  {
+   "stem": "beltfed-gif5",
+   "files": [
+    {
+     "label": "WebM",
+     "name": "beltfed-gif5.webm",
+     "size": 4884865
+    },
+    {
+     "label": "GIF",
+     "name": "beltfed-gif5.gif",
+     "size": 31825525
+    }
+   ]
+  }
+ ]
+}

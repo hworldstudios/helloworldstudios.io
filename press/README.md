@@ -6,8 +6,9 @@ maintained twice, and nothing in `index.html` needs editing to add content.
 
 ```
 press/
-  index.html          the page - renders presskit.md + press-kit/ at runtime
+  index.html          the page - renders presskit.md + manifest.json at runtime
   presskit.md         ALL copy. Edit this and nothing else.
+  manifest.json       GENERATED index of every gallery file and clip
   gifs/               *.webm + *.gif clips. NOT in the ZIP - a pair is ~36 MB,
                       which would push the archive past GitHub's 100 MB limit.
                       Linked from the page instead, like video.
@@ -28,16 +29,17 @@ press/
 ## The loop
 
 1. Edit `presskit.md` for copy, `press-kit/` for files.
-2. `python press/tools/build-zip.py` - regenerates `presskit.html`,
-   `presskit.pdf` and `presskit.docx` from the markdown, then rebuilds
-   `press-kit.zip`. One parser feeds all three, so they can't disagree.
+2. `python press/tools/build-zip.py` - rewrites `manifest.json`, regenerates
+   `presskit.html`, `presskit.pdf` and `presskit.docx` from the markdown, then
+   rebuilds `press-kit.zip`. One parser feeds all three, so they can't disagree.
 3. `python press/tools/make-thumbs.py` if you added images. Optional but worth
    it: without it the gallery falls back to the full-resolution originals,
    which are ~5 MB each.
 4. Commit and push.
 
 Step 2 has to be the script, not Explorer's **Compress to ZIP file** - a manual
-zip would ship stale copies of all three generated files.
+zip would ship stale copies of all three generated files, and the page would
+still be listing yesterday's files.
 
 PDF and DOCX need two libraries:
 
@@ -50,16 +52,19 @@ HTML and the ZIP.
 
 ## Adding a screenshot
 
-Drop it in `press-kit/screenshots/` using a lowercase-kebab-case name. The page
-lists the folder live via the GitHub contents API, so it appears on its own once
-pushed, and the generated files pick it up on the next build.
+Drop it in `press-kit/screenshots/` using a lowercase-kebab-case name, then run
+the build. Nothing else to register.
 
 ## Adding a GIF
 
-Put a matching pair in `press/gifs/` - `name.webm` and `name.gif`. They are
-paired by filename, so nothing else needs naming or registering. The page plays
-the WebM inline (autoplay, muted, looping) and offers both formats to download;
-the generated kit files link them on the live site.
+Put a matching pair in `press/gifs/` - `name.webm` and `name.gif`, then run the
+build. They are paired by filename, so nothing else needs naming or registering.
+The page plays the WebM inline (autoplay, muted, looping, and only once it
+scrolls into view) and offers both formats to download; the generated kit files
+link them on the live site.
+
+Keep each `.gif` under 100 MB - that is a hard GitHub limit, and a push
+containing a larger file is rejected outright.
 
 ## Editing the copy
 
@@ -93,6 +98,7 @@ as an aside: it keeps its anchor but is left out of the nav.
 
 ## Gotcha
 
-The live listing reads the **pushed** repo, so new files show up on
-helloworldstudios.io only after you push. Before then the page falls back to a
-built-in list in `index.html`, which is also what a local `file://` open sees.
+The page lists files from `manifest.json`, so a new file appears only after you
+run the build. It used to read the GitHub API, which meant galleries showed the
+last *pushed* state and anything uncommitted was invisible - if a file is
+missing from the page, run step 2.
