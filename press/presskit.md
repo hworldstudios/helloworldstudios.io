@@ -24,12 +24,12 @@ AUTOMATE DEATH · Roguelike Factory Defense · PC (Steam) · Spring 2027
 - **Publisher:** TBC
 - **Platform:** PC (Windows) via Steam
 - **Release date:** Spring 2027
-- **Demo:** Playable Steam demo, late 2026
+- **Demo:** TBC
 - **Price:** TBC
 - **Players:** Single-player
-- **Engine:** Unity (DOTS, Data-Oriented Technology Stack)
+- **Engine:** Unity
 - **Languages:** English (more TBC)
-- **Studio location:** Abu Dhabi, UAE (founders from Cornwall, UK)
+- **Studio location:** Abu Dhabi, UAE
 - **Website:** [beltfedgame.com](https://beltfedgame.com)
 - **Studio site:** [helloworldstudios.io](https://helloworldstudios.io)
 - **Discord:** [discord.gg/ZK87SK7H2Z](https://discord.gg/ZK87SK7H2Z)
@@ -46,13 +46,13 @@ You are a rogue AI with one directive: AUTOMATE DEATH. Shred, burn and vaporize 
 
 ### Long - main description
 
-BELTFED is a roguelike factory-defense game of rapid, brutal runs and absurd scale. Lay belts, wire up smelters and assemblers, and balance your power grid, turning raw ore into raw firepower. All the while a planet's worth of bugs descends upon your factory. Every run is the whole arc, start to end game, in one sitting. This is automation fused with total war.
+BELTFED is a roguelike factory-defense game of rapid, brutal runs and absurd scale. Lay belts, wire up smelters and assemblers, and balance your power grid, turning raw ore into raw firepower. All the while a planet's worth of bugs descends upon your factory. This is automation fused with total war.
 
-#### Mass production. Mass extinction.
+#### Automate death
 
 The swarm arrives in the hundreds of thousands. Meet them with guns, flamethrowers, launchers, mortars, lasers, drones, mines and more - all of it fueled by your own production lines. A single run can push your kill count into the millions. Welcome to slaughter at an industrial scale.
 
-#### Automate death
+#### Mass production. Mass extinction.
 
 Balance industry, power and security as you expand your factory and push into the fog for richer veins and rarer resources. More bugs require more bullets, and supply must keep up because demand doesn't wait. As you expand, choose from run-defining upgrade cards that shape how you play, making every factory different from the last.
 
@@ -79,13 +79,13 @@ Every deployment feeds permanent progression: new weapons, new buildings, new up
 
 ## Video
 
-Video is **not** included in the press kit download - everything below streams or downloads from the links here, so the ZIP stays small.
+Videos are **not** included in the press kit download - download them below.
 
 ### Announcement trailer
 
 <!-- youtube: n4RiVblVQ90 -->
 
-- **Watch or embed:** [youtu.be/n4RiVblVQ90](https://youtu.be/n4RiVblVQ90)
+- **Watch or embed:** [youtube.com/watch?v=n4RiVblVQ90](https://www.youtube.com/watch?v=n4RiVblVQ90)
 - **4K MP4:** [Download from Google Drive](https://drive.google.com/file/d/14PxjfY7sSNz39gYBAymPmmnskpKc-n5K)
 - **1080p MP4:** [Download from Google Drive](https://drive.google.com/file/d/1Ei3-TWZRDzvugSAi9SKLuLqlZfToavAO)
 
@@ -113,6 +113,8 @@ Video is **not** included in the press kit download - everything below streams o
 
 ## GIFs
 
+GIFs are **not** included in the press kit download - download them below.
+
 <!-- clips: gifs -->
 
 ## Logos & key art
@@ -127,12 +129,12 @@ Video is **not** included in the press kit download - everything below streams o
 
 ## Team
 
-- **Toby Atkinson** - Developer · Lead Designer · [LinkedIn](https://www.linkedin.com/in/toby-atkinson/)
-- **Troy Atkinson** - Developer · Business & Operations · [LinkedIn](https://www.linkedin.com/in/troymakesgames/)
+- **Toby Atkinson** - Developer · Lead Designer
+- **Troy Atkinson** - Developer · Business & Operations
 
 Hello World Studios is a two-person independent studio founded by brothers Toby and Troy Atkinson. From Cornwall in the UK, now based in Abu Dhabi, both studied games development at Falmouth Games Academy.
 
-Toby went straight into the indie industry after university, and was one of three developers behind the roguelike [Firehawk FPV Drone Fighter](https://store.steampowered.com/app/3365170/Firehawk_FPV_Drone_Fighter/) (TruePlayers, 2025). Troy went on to study entrepreneurship and became a staff engineer and shareholder at adtech startup [Audiomob](https://audiomob.com).
+Toby went straight into the indie industry after university, and was one of three developers behind the roguelike [Firehawk FPV Drone Fighter](https://store.steampowered.com/app/3365170/Firehawk_FPV_Drone_Fighter/) (TruePlayers, 2025). Troy went on to study entrepreneurship and became a staff engineer and shareholder at a tech startup.
 
 BELTFED began in October 2023 as a part-time project, combining Toby's game design with Troy's experience building large-scale engineering systems - a combination the team credits directly with BELTFED's ability to simulate a ridiculous number of enemies on-screen at once.
 
@@ -146,7 +148,7 @@ BELTFED is the studio's debut title.
 >
 > - Toby Atkinson, Lead Designer
 
-> "I love factory games, but I never have the patience to get to the end game. BELTFED flips the genre on its head and throws you straight into the action - from first belts down to late-game insanity in a single play session. It appeals to new players who don't have the time to commit to a more traditional automation title, and to veterans looking for a new challenge and a crazy change of pace."
+> "I love factory games, but I never have the patience to get to the end game. BELTFED flips the genre on its head and throws you straight into the action - from first belts down to late-game insanity in a single play session. It appeals to new players who don't have the time to commit to a more traditional automation title, and to veterans looking for a new challenge with a crazy change of pace."
 >
 > - Troy Atkinson, Developer
 

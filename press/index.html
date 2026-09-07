@@ -561,6 +561,9 @@
       .section--features .md-list {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        /* Every row as tall as the tallest card, so the grid reads as one
+           block rather than a ragged set of boxes. */
+        grid-auto-rows: 1fr;
         gap: 1rem;
         max-width: none;
       }
