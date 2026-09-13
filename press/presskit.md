@@ -106,6 +106,11 @@ Videos are **not** included in the press kit download - download them below.
 - **Watch or embed:** [youtube.com/shorts/lGVy7Jap5LM](https://youtube.com/shorts/lGVy7Jap5LM)
 - **1080p MP4:** [Download from Google Drive](https://drive.google.com/file/d/17QKUeNAluj9RBcgc5dv3QZ54A1eWpHM0)
 
+### B-Roll Footage (6 Mins, No Music)
+
+- **Watch or embed:** [youtube.com/watch?v=PVkPppnsAdQ](https://www.youtube.com/watch?v=PVkPppnsAdQ)
+- **1080p MP4:** [Download from Google Drive](https://drive.google.com/file/d/15mRid4Y1BAjUA2tY00AFEiYi-qZfd4xp)
+
 ## Screenshots
 
 <!-- gallery: screenshots -->
