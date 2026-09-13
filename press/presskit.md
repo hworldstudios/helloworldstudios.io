@@ -97,15 +97,14 @@ Videos are **not** included in the press kit download - download them below.
 
 ### Social cut
 
-- **Watch or embed:** Coming soon
-- **4K MP4:** Coming soon
-- **1080p MP4:** Coming soon
+- **Watch or embed:** [youtube.com/watch?v=PL9EuF322NU](https://www.youtube.com/watch?v=PL9EuF322NU)
+- **4K MP4:** [Download from Google Drive](https://drive.google.com/file/d/1OnS2s20zNNBvIszDtgbUDj5ulE1vaoZD)
+- **1080p MP4:** [Download from Google Drive](https://drive.google.com/file/d/1WBpLjl6eGqbG1fi6SvLc1AudVBu6d7kf)
 
-### Vertical cut - 9:16
+### Vertical cut
 
-- **Watch or embed:** Coming soon
-- **4K MP4:** Coming soon
-- **1080p MP4:** Coming soon
+- **Watch or embed:** [youtube.com/shorts/lGVy7Jap5LM](https://youtube.com/shorts/lGVy7Jap5LM)
+- **1080p MP4:** [Download from Google Drive](https://drive.google.com/file/d/17QKUeNAluj9RBcgc5dv3QZ54A1eWpHM0)
 
 ## Screenshots
 
