@@ -77,7 +77,32 @@ Every deployment feeds permanent progression: new weapons, new buildings, new up
 - **Multiple planets.** Travel to exotic new worlds, then kill everything living on them. Each planet has its own rules and hazards.
 - **Countless strategies.** Build around your strengths, play around your weaknesses - how long will your factory last?
 
-## Video
+## Team
+
+- **Toby Atkinson** - Developer · Lead Designer
+- **Troy Atkinson** - Developer · Business & Operations
+
+Hello World Studios is a two-person independent studio founded by brothers Toby and Troy Atkinson. From Cornwall in the UK, now based in Abu Dhabi, both studied games development at Falmouth Games Academy.
+
+Toby went straight into the indie industry after university, and was one of three developers behind the roguelike [Firehawk FPV Drone Fighter](https://store.steampowered.com/app/3365170/Firehawk_FPV_Drone_Fighter/) (TruePlayers, 2025). Troy went on to study entrepreneurship and became a staff engineer and shareholder at a tech startup.
+
+BELTFED began in October 2023 as a part-time project, combining Toby's game design with Troy's experience building large-scale engineering systems - a combination the team credits directly with BELTFED's ability to simulate a ridiculous number of enemies on-screen at once.
+
+BELTFED is the studio's debut title.
+
+<!-- gallery: team -->
+
+## Quotes
+
+> "I always wanted to make an automation game, and when we prototyped the roguelike tower defense mashup it was obvious from the first playtest that it just worked - the pressure makes you build differently, and that turned out to be the whole game. The scale wasn't in the original design, but we kept cranking up the enemy count and it just kept getting more fun."
+>
+> - Toby Atkinson, Lead Designer
+
+> "I love factory games, but I never have the patience to get to the end game. BELTFED flips the genre on its head and throws you straight into the action - from first belts down to late-game insanity in a single play session. It appeals to new players who don't have the time to commit to a more traditional automation title, and to veterans looking for a new challenge with a crazy change of pace."
+>
+> - Troy Atkinson, Developer
+
+## Videos
 
 Videos are **not** included in the press kit download - download them below.
 
@@ -130,31 +155,6 @@ GIFs are **not** included in the press kit download - download them below.
 ### Key art & capsules
 
 <!-- gallery: key-art -->
-
-## Team
-
-- **Toby Atkinson** - Developer · Lead Designer
-- **Troy Atkinson** - Developer · Business & Operations
-
-Hello World Studios is a two-person independent studio founded by brothers Toby and Troy Atkinson. From Cornwall in the UK, now based in Abu Dhabi, both studied games development at Falmouth Games Academy.
-
-Toby went straight into the indie industry after university, and was one of three developers behind the roguelike [Firehawk FPV Drone Fighter](https://store.steampowered.com/app/3365170/Firehawk_FPV_Drone_Fighter/) (TruePlayers, 2025). Troy went on to study entrepreneurship and became a staff engineer and shareholder at a tech startup.
-
-BELTFED began in October 2023 as a part-time project, combining Toby's game design with Troy's experience building large-scale engineering systems - a combination the team credits directly with BELTFED's ability to simulate a ridiculous number of enemies on-screen at once.
-
-BELTFED is the studio's debut title.
-
-<!-- gallery: team -->
-
-## Quotes
-
-> "I always wanted to make an automation game, and when we prototyped the roguelike tower defense mashup it was obvious from the first playtest that it just worked - the pressure makes you build differently, and that turned out to be the whole game. The scale wasn't in the original design, but we kept cranking up the enemy count and it just kept getting more fun."
->
-> - Toby Atkinson, Lead Designer
-
-> "I love factory games, but I never have the patience to get to the end game. BELTFED flips the genre on its head and throws you straight into the action - from first belts down to late-game insanity in a single play session. It appeals to new players who don't have the time to commit to a more traditional automation title, and to veterans looking for a new challenge with a crazy change of pace."
->
-> - Troy Atkinson, Developer
 
 ## Permissions
 
